@@ -1,283 +1,64 @@
-# 🎮  INGRDLE
+# Ingrdle
 
-> **Daily game** — Devine l'ingrédient caché sur l'étiquette d'un produit réel.
-> 3 produits/jour × 1 question "ingrédient fantôme" + trivia fun + score + streak.
+A daily food trivia game about the ingredients hiding in everyday products.
 
----
+> **Project status: early prototype.** The repository currently contains the beginning of a Python data-preparation script. The game, question generation, and deployment are planned, but are not implemented yet.
 
-## 📌 Concept
+## The idea
 
-Chaque jour, **3 produits réels** (issus d'Open Food Facts) sont présentés.
-Pour chaque produit, on affiche la liste des ingrédients avec **un trou**.
-Le joueur doit deviner quel ingrédient manque parmi 4 options.
+Each day, players see three real food products from [Open Food Facts](https://world.openfoodfacts.org). One ingredient is hidden from each product's ingredient list, and players choose the missing ingredient from four options. Correct answers earn points; fun facts reveal more about each ingredient.
 
-**MVP anglophone** (EN), V2 multilingue (FR, ES, DE…).
+The first version is planned in English. Additional languages may follow later.
 
----
+## What's in the repository today
 
-## 🎮 Mécanique
+- [`scripts/prepare.py`](scripts/prepare.py) downloads the English Open Food Facts product export and scans it for rows with a product name and a front image.
+- The downloaded compressed export is stored at `scripts/data/off_products.csv.gz` and is ignored by Git.
+- `static/` is currently empty. There is no game frontend or generated question file yet.
 
-### "L'ingrédient fantôme"
+The preparation script is still a work in progress: it does not yet enforce the minimum ingredient count, choose a random sample, or write questions to an output file.
 
-- Image du produit + liste des ingrédients avec **1 ingrédient masqué**
-- 4 options (1 vrai + 3 leurres plausibles)
-- 5 essais max
-- Après la réponse → **trivia fun** sur l'ingrédient
+## Run the prototype
 
-### Leurres (3 niveaux de fallback)
+Requirements: Python 3 and the `requests` package.
 
-| Niveau | Méthode |
-|--------|---------|
-| 1 | Siblings via taxonomie OFF (`taxonomy_suggestions`) |
-| 2 | Heuristique sur le slug (même suffixe : `-starch`, `-flour`, etc.) |
-| 3 | Fallback random dans la même famille |
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install requests
+python scripts/prepare.py
+```
 
-### Scoring
+On the first run, the script downloads the Open Food Facts export (about 1.28 GB) to `scripts/data/`. Later runs reuse the local download. The script currently scans the export but does not produce a game-ready dataset.
 
-| Essai | Points |
-|-------|--------|
-| 1er | 128 |
-| 2e | 64 |
-| 3e | 32 |
-| 4e | 16 |
-| 5e | 8 |
+## Planned gameplay
 
-- Score max/jour : **384 pts** (3 × 128)
-- **Streak** : jours consécutifs (bonus +10% à 7 jours)
-- "You beat X% of players today"
+- Three products per day, each with one hidden ingredient and four answer choices.
+- Up to five attempts per product.
+- Planned points per product: 128, 64, 32, 16, or 8, depending on the attempt used.
+- A daily score out of 384 and a consecutive-day streak.
+- A short, light-hearted fact about the ingredient after each answer.
 
-### V2 : Visuel "Foodie"
+These are design goals, not features available in the current prototype.
 
-Une cellule/personnage qui se dégrade à chaque mauvais essai :
-🟢 → 🟡 → 🟠 → 🔴 → ⚫
+## Planned data pipeline
 
-MVP : emoji uniquement. V2 : animation (Lottie/SVG).
+1. Download and filter the English Open Food Facts export.
+2. Select products with enough ingredients and a front image.
+3. Hide an ingredient and create three plausible distractors, using taxonomy suggestions and fallback rules.
+4. Generate ingredient trivia, then review it manually.
+5. Export daily questions as static JSON for the game to consume.
 
----
+Open Food Facts data is available under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/). Review its attribution and share-alike requirements before publishing derived datasets.
 
-## 📊 Données
+## Planned technology
 
-### Source : [Open Food Facts](https://world.openfoodfacts.org)
+| Area | Planned choice |
+| --- | --- |
+| Game frontend | SvelteKit and Tailwind CSS |
+| Scores and player data | Supabase |
+| Hosting | Netlify |
+| Data preparation | Python |
+| Trivia drafts | OpenRouter |
 
-- Licence : **ODbL** (libre)
-- API gratuite, sans clé
-- Export en masse : CSV/JSONL (~2-3 Go)
-- Endpoint : `https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz`
-
-### Filtres du pool
-
-- `ingredients` ≥ 5
-- `front_image_url` non vide
-- `lang` = `en` (MVP)
-- Catégories : snacks, céréales, sauces, boissons, biscuits, yaourts…
-- Pool estimé : **5 000 – 15 000 produits** → 5-15 ans de contenu à 3/jour
-
----
-
-## 🏗️ Architecture
-
-┌─────────────────────────────────────────────────────────┐
-│ PWA (SvelteKit + Tailwind) │
-│ │
-│ GET /questions_en.json (statique, servi par Netlify) │
-│ Supabase SDK (auth + scores) │
-└───────────┬───────────────────────────┬─────────────────┘
-│ │
-▼ ▼
-┌─────────────────┐ ┌──────────────────┐
-│ Netlify │ │ Supabase │
-│ (static host) │ │ (free tier) │
-│ │ │ │
-│ questions.json │ │ users (id, │
-│ (~50 Ko) │ │ username, │
-│ │ │ streak) │
-└─────────────────┘ │ scores (id, │
-│ user_id, date, │
-│ score, q1_pts, │
-│ q2_pts, q3_pts)│
-└──────────────────┘
-
-
-**Aucun serveur codé.** Netlify sert le JSON statique. Supabase sert les scores.
-
----
-
-## 📁 Structure du repo
-
-ingrdle/
-├── src/ # PWA (SvelteKit)
-│ ├── routes/
-│ │ ├── +layout.svelte
-│ │ └── +page.svelte # Page principale du jeu
-│ ├── lib/
-│ │ ├── components/
-│ │ │ ├── ProductCard.svelte
-│ │ │ ├── IngredientList.svelte
-│ │ │ ├── OptionsGrid.svelte
-│ │ │ ├── ScoreBar.svelte
-│ │ │ ├── StreakBadge.svelte
-│ │ │ └── TriviaReveal.svelte
-│ │ ├── stores/
-│ │ │ ├── game.svelte.ts # State du jeu
-│ │ │ └── user.svelte.ts # State utilisateur
-│ │ └── supabase/
-│ │ └── client.ts
-│ ├── app.html
-│ └── app.css
-├── static/
-│ ├── questions_en.json # 45 questions (15 jours × 3)
-│ ├── questions_fr.json # V2
-│ ├── manifest.webmanifest
-│ └── icons/
-├── scripts/
-│ ├── prepare.py # Script principal (génère questions.json)
-│ ├── generate_trivia.py # Appel LLM (OpenRouter)
-│ ├── review.html # (Option B, plus tard)
-│ └── data/
-│ └── off_export.csv # (gitignored)
-├── supabase/
-│ └── migrations/
-│ └── 001_init.sql # Tables users + scores
-├── netlify.toml
-├── .env # (gitignored)
-├── .gitignore
-├── package.json
-├── svelte.config.js
-├── tailwind.config.js
-└── README.md
-
-
----
-
-## 🐍 Pipeline de préparation (scripts Python)
-
-### Étape 1 — Récupération & filtre
-
-Télécharger l'export CSV OFF (~2 Go)
-Filtre : len(ingredients) >= 5 AND front_image_url != ""
-random.sample(qualifies_products, 45) → 15 jours × 3
-
-### Étape 2 — Génération des questions
-
-Pour chaque produit :
-→ random.choice(ingredients) → ingrédient à cacher
-→ Trouver 3 leurres (taxonomy / suffixe / random)
-→ Stocker : { product, hidden, options[4], position, correct_index }
-
-
-### Étape 3 — Trivia (LLM)
-
-Pour chaque ingrédient unique (~45 pour le MVP) :
-→ Appel OpenRouter (Claude Haiku 4.5 ou modèle :free)
-→ Prompt : "Génère 5 faits fun, 1 phrase max, 1 emoji, ton décontracté"
-→ Stocker dans trivia_raw.json (5 options par ingrédient)
-
-
-### Étape 4 — Sélection manuelle (MVP)
-
-Ouvrir trivia_raw.json dans l'éditeur
-→ Lire les 5 trivia par ingrédient
-→ Garder 1-2 (supprimer le reste)
-→ Export trivia_final.json
-
-
-### Format final : `questions_en.json`
-
-```json
-{
-  "2026-10-09": [
-    {
-      "product_name": "Crepes Bretonnes 12x26.25g",
-      "brand": "St Michel",
-      "image_url": "https://images.openfoodfacts.org/...",
-      "ingredients_display": ["wheat flour", "sugar", "???", "butter", "salt", "yeast"],
-      "options": ["butter", "honey", "milk powder", "cocoa"],
-      "correct_index": 0,
-      "trivia": "🧈 Butter is 80% milk fat and 16% water. That's it. That's butter."
-    }
-  ]
-}
-
-🔐 Auth (MVP)
-Pseudo choisi (1 champ, zéro friction) :
-
-Premier visit → "Ton nom de joueur ?" → play
-Stocké en localStorage + inséré dans Supabase users
-Pas de login screen, pas de password
-V2 : migration vers email + magic link (Supabase Auth)
-🛡️ Sécurité
-questions.json = public (volontaire)
-Supabase RLS activé (un user ne voit pas les scores des autres)
-HTTPS auto (Netlify)
-Pas de données sensibles
-MVP : rien à coder en sécurité supplémentaire
-📦 Stack technique
-Couche	Choix	Pourquoi
-Frontend	SvelteKit + Tailwind CSS	Léger, rapide, parfait pour un jeu
-Backend	Supabase (free tier)	DB + Auth + API REST + SDK, 0€
-Hébergement	Netlify (free tier)	Auto-deploy via Git, commercial OK
-Scripts	Python	Préprocessing, génération trivia
-LLM	OpenRouter (Claude Haiku 4.5 ou :free)	Trivia, coût ~$0.05/batch
-Domaine	Porkbun (~$12/an)	Optionnel, .netlify.app suffit pour MVP
-
-Coûts totaux
-Service	Coût
-Netlify	$0
-Supabase	$0
-OpenRouter	~$0.05 (one-shot)
-Domaine	~$12/an (optionnel)
-TOTAL	$0 à $12/an
-
-📅 Roadmap
-MVP (4-6 semaines)
-Semaine	Livrable
-S1	Script Python + questions_en.json (15 jours) + trivia
-S2	PWA : UI du jeu (produit, trou, options, scoring)
-S3	Supabase : auth (pseudo) + scores + streak
-S4	Polish + déploiement + test + promo
-
-V2
-Type "plus/moins" (variété de questions)
-Leaderboard hebdo
-Carte de partage (grille Wordle-like)
-Animation "Foodie" (cellule qui dégrade)
-Langue FR
-Pool élargi + filtres par catégorie
-PWA installable
-V3
-Modes saisonniers ("Semaine du chocolat")
-Badges ("Additif Hunter", "Sugar Sniper")
-Email + magic link (cross-device)
-Mobile native (si besoin)
-🎲 Aléatoire & fraîcheur
-1 seed par jour (date) → tout le monde a les 3 mêmes produits
-3 produits/jour → ~18 250 jours de contenu (50 ans)
-Sélection : aléatoire dans le pool, filtré (≥5 ingrédients, image dispo)
-📚 Références
-Open Food Facts API : https://world.openfoodfacts.org/data
-Export CSV : https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz
-Supabase : https://supabase.com
-Netlify : https://netlify.com
-OpenRouter : https://openrouter.ai
-Wordle clones Svelte (inspirations) :
-https://github.com/jamesqquick/sveltekit-wordle-clone
-https://github.com/dcBrian/wordle
-✅ Décisions validées
-Décision	Choix
-Nom	ingrdle
-Mécanique MVP	Ingrédient fantôme, 3 produits/jour
-Score MVP	128/64/32/16/8 + emoji (🟢🟡🟠🔴⚫)
-Score V2	Animation "Foodie"
-LLM trivia	OpenRouter (Haiku 4.5 ou :free), 5 trivia/ingrédient, sélection manuelle
-Données	Export OFF local, pré-traité en Python
-Langue MVP	EN
-Plateforme MVP	PWA web (SvelteKit)
-Auth MVP	Pseudo choisi (1 champ)
-Streak	Oui, dès le MVP
-Carte de partage	V2
-Hébergement	Netlify
-DB	Supabase free tier
-Domaine	Porkbun (optionnel)
-
-
-© 2026 [Guillaume Se.]. All rights reserved.
+This stack is tentative and has not been added to the repository yet.
