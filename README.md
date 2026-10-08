@@ -12,8 +12,9 @@ The first version is planned in English. Additional languages may follow later.
 
 ## What's in the repository today
 
-- [`scripts/prepare.py`](scripts/prepare.py) downloads the English Open Food Facts product export and scans it for rows with a product name and a front image.
+- [`scripts/prepare.py`](scripts/prepare.py) downloads the English Open Food Facts product export and picks random rows with a product name and an image.
 - The downloaded compressed export is stored at `scripts/data/off_products.csv.gz` and is ignored by Git.
+- A 15-product test CSV can be generated at `scripts/data/off_products_test.csv` and used for quick runs.
 - `static/` is currently empty. There is no game frontend or generated question file yet.
 
 The preparation script is still a work in progress: it does not yet enforce the minimum ingredient count, choose a random sample, or write questions to an output file.
@@ -29,7 +30,14 @@ python -m pip install requests
 python scripts/prepare.py
 ```
 
-On the first run, the script downloads the Open Food Facts export (about 1.28 GB) to `scripts/data/`. Later runs reuse the local download. The script currently scans the export but does not produce a game-ready dataset.
+Create a small test dataset once, then run against it without scanning the full export:
+
+```bash
+python scripts/prepare.py --create-test-csv
+python scripts/prepare.py --use-test-csv
+```
+
+On the first run, the script downloads the Open Food Facts export (about 1.28 GB) to `scripts/data/`. Later normal runs reuse the local download but scan it again. The test CSV contains only the columns needed for quick selection and is not a game-ready dataset.
 
 ## Planned gameplay
 
@@ -62,3 +70,6 @@ Open Food Facts data is available under the [Open Database License (ODbL)](https
 | Trivia drafts | OpenRouter |
 
 This stack is tentative and has not been added to the repository yet.
+
+
+© 2026 [Guillaume Se.]. All rights reserved.

@@ -1,2 +1,3 @@
 .DS_Store
-scripts/data
+scripts/data/*.csv.gz
+scripts/__pycache__/
