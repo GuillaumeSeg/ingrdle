@@ -11,9 +11,9 @@ from typing import TextIO
 import requests
 
 if __package__:
-    from .product_filter import english_field, is_qualified
+    from .product_filter import is_qualified
 else:
-    from product_filter import english_field, is_qualified
+    from product_filter import is_qualified
 
 # Increase the CSV field size limit (default is 128KB, some products exceed it)
 csv.field_size_limit(sys.maxsize)
@@ -22,8 +22,14 @@ csv.field_size_limit(sys.maxsize)
 CSV_URL = "https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz"
 CSV_PATH = "scripts/data/off_products.csv.gz"
 TEST_CSV_PATH = "scripts/data/off_products_test.csv"
-TEST_PRODUCT_FIELDS = ("code", "product_name", "ingredients_text", "image_url")
-MIN_INGREDIENTS = 5
+TEST_PRODUCT_FIELDS = (
+    "code",
+    "brands",
+    "product_name",
+    "ingredients_text",
+    "image_url",
+)
+TEST_CSV_PRODUCTS_ROWS = 200
 # ───────────────────────────────────────────────────────────────
 
 
@@ -73,7 +79,7 @@ def open_product_file(path: str) -> TextIO:
     return open(path, "rt", encoding="utf-8", newline="")
 
 
-def export_test_csv(n: int = 20) -> None:
+def export_test_csv(n: int = TEST_CSV_PRODUCTS_ROWS) -> None:
     os.makedirs(os.path.dirname(TEST_CSV_PATH), exist_ok=True)
     exported = 0
 
@@ -100,7 +106,6 @@ def load_and_pick(
     n: int = 2,
     csv_path: str = CSV_PATH,
     delimiter: str = "\t",
-    english_only: bool = True,
 ) -> list[dict[str, str]]:
     """Read the CSV and pick n random qualified products."""
     # First pass: count total rows
@@ -125,17 +130,16 @@ def load_and_pick(
             if processed % 50_000 == 0:
                 print(progress_bar(processed, total_rows), end="", flush=True)
 
-            if not is_qualified(row, english_only=english_only):
+            if not is_qualified(row):
                 continue
 
             qualified.append(
                 {
                     "code": row.get("code", ""),
-                    "product_name": (
-                        english_field(row, "product_name")
-                        if english_only
-                        else row.get("product_name", "") or ""
-                    ),
+                    "product_name": row.get("product_name", "") or "",
+                    "brands": row.get("brands", "") or "",
+                    "ingredients_text": row.get("ingredients_text", "") or "",
+                    "image_url": row.get("image_url", "") or "",
                 }
             )
 
@@ -164,16 +168,17 @@ def main() -> None:
     if args.use_test_csv:
         if not os.path.exists(TEST_CSV_PATH):
             parser.error("Test CSV not found. Run with --create-test-csv first.")
-        winners = load_and_pick(
-            n=3, csv_path=TEST_CSV_PATH, delimiter=",", english_only=False
-        )
+        winners = load_and_pick(n=3, csv_path=TEST_CSV_PATH, delimiter=",")
     else:
         download_csv()
         winners = load_and_pick(n=3)
 
     print("\n🎯 Selected products:")
     for index, product in enumerate(winners, start=1):
-        print(f"{index}. {product['product_name']} (code: {product['code']})")
+        print(
+            f"{index}. {product['product_name']} "
+            f"(brand: {product['brands']}, code: {product['code']})"
+        )
 
 
 if __name__ == "__main__":
