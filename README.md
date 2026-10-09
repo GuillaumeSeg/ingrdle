@@ -12,9 +12,9 @@ The first version is planned in English. Additional languages may follow later.
 
 ## What's in the repository today
 
-- [`scripts/prepare.py`](scripts/prepare.py) downloads the English Open Food Facts product export and picks random rows with a product name and an image.
+- [`scripts/prepare.py`](scripts/prepare.py) downloads the English Open Food Facts product export and picks random products with an English name, English ingredients, and an image. It uses English translations when available, otherwise requiring the product language (`lc`) to be English.
 - The downloaded compressed export is stored at `scripts/data/off_products.csv.gz` and is ignored by Git.
-- A 15-product test CSV can be generated at `scripts/data/off_products_test.csv` and used for quick runs.
+- A 20-product test CSV can be generated at `scripts/data/off_products_test.csv` and used for quick runs.
 - `static/` is currently empty. There is no game frontend or generated question file yet.
 
 The preparation script is still a work in progress: it does not yet enforce the minimum ingredient count, choose a random sample, or write questions to an output file.
