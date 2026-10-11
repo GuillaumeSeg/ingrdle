@@ -5,7 +5,7 @@
       "name": "Prepare: create test CSV",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/scripts/prepare.py",
+      "program": "${workspaceFolder}/scripts/prepare_with_csv.py",
       "args": ["--create-test-csv"],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
@@ -15,17 +15,26 @@
       "name": "Prepare: use test CSV",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/scripts/prepare.py",
+      "program": "${workspaceFolder}/scripts/prepare_with_csv.py",
       "args": ["--use-test-csv"],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "python": "${command:python.interpreterPath}"
     },
     {
-      "name": "Prepare: normal run",
+      "name": "Prepare: Normal CSV run",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/scripts/prepare.py",
+      "program": "${workspaceFolder}/scripts/prepare_with_csv.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${command:python.interpreterPath}"
+    },
+    {
+      "name": "Prepare: API search",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/prepare_with_api.py",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "python": "${command:python.interpreterPath}"
