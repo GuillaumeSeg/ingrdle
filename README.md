@@ -16,11 +16,12 @@ The first version is planned in English. Additional languages may follow later.
 - [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) requests a random page from the Open Food Facts v2 API and applies the same qualification rules.
 - [`scripts/download_jsonl.py`](scripts/download_jsonl.py) downloads the compressed JSONL export to `scripts/data/` with a progress bar and a month-based filename.
 - [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds a cache of qualified English products on its first full scan, then samples three products from that cache on later runs.
+- [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three randomly selected product questions to `questions/YYYY-MM-DD.json` and records the selection seed.
 - The downloaded compressed export is stored at `scripts/data/off_products.csv.gz` and is ignored by Git.
 - A 40-product test CSV can be generated at `scripts/data/off_products_test.csv` and used for quick runs.
 - `static/` is currently empty. There is no game frontend or generated question file yet.
 
-The preparation script enforces the minimum ingredient count and chooses a random sample, but does not yet write game questions to an output file.
+The CSV and API preparation scripts select products but do not create game questions. `generate_questions.py` writes the initial daily JSON with three product names and brands.
 
 ## Run the prototype
 
@@ -66,6 +67,16 @@ python scripts/prepare_with_json.py --max-products 50000
 ```
 
 The qualified-products cache is rebuilt automatically when the source archive changes.
+
+Generate today's question file, or choose a date explicitly:
+
+```bash
+python scripts/generate_questions.py
+python scripts/generate_questions.py --date 2026-10-12
+python scripts/generate_questions.py --tomorrow
+```
+
+Each run chooses a fresh random seed, so regenerating the same date can produce different products. The seed is saved in the JSON; pass it with `--seed` to reproduce that selection.
 
 On the first run, the script downloads the Open Food Facts export (about 1.28 GB) to `scripts/data/`. Later normal runs reuse the local download but scan it again. The test CSV contains only the columns needed for quick selection and is not a game-ready dataset.
 

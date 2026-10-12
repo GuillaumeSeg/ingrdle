@@ -100,10 +100,12 @@ def sample_qualified_products(
     sample_size: int = SAMPLE_SIZE,
     max_products: int | None = None,
     cache_output: TextIO | None = None,
+    rng: random.Random | None = None,
 ) -> tuple[int, int, list[dict[str, str]]]:
     scanned = 0
     qualified_count = 0
     selected: list[dict[str, str]] = []
+    selector = rng or random
 
     with Progress(
         SpinnerColumn(),
@@ -136,7 +138,7 @@ def sample_qualified_products(
             if len(selected) < sample_size:
                 selected.append(candidate)
             else:
-                replacement_index = random.randrange(qualified_count)
+                replacement_index = selector.randrange(qualified_count)
                 if replacement_index < sample_size:
                     selected[replacement_index] = candidate
 
@@ -162,19 +164,21 @@ def sample_qualified_products(
 def scan_archive(
     archive: Path,
     max_products: int | None,
+    rng: random.Random | None = None,
 ) -> tuple[int, int, list[dict[str, str]], bool]:
     if max_products is not None:
         with gzip.open(archive, "rt", encoding="utf-8") as products:
             scanned, qualified_count, selected = sample_qualified_products(
                 products,
                 max_products=max_products,
+                rng=rng,
             )
         return scanned, qualified_count, selected, False
 
     if cache_matches_archive(archive):
         with CACHE_PATH.open(encoding="utf-8") as cached_products:
             scanned, qualified_count, selected = sample_qualified_products(
-                cached_products
+                cached_products, rng=rng
             )
         return scanned, qualified_count, selected, False
 
@@ -187,6 +191,7 @@ def scan_archive(
             scanned, qualified_count, selected = sample_qualified_products(
                 products,
                 cache_output=cache_output,
+                rng=rng,
             )
         temporary_cache_path.replace(CACHE_PATH)
         save_cache_metadata(archive)

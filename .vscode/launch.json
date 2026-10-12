@@ -66,6 +66,16 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "python": "${command:python.interpreterPath}"
+    },
+    {
+      "name": "Prepare: Generate questions for date",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/generate_questions.py",
+      "args": ["--date", "2026-10-12"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${command:python.interpreterPath}"
     }
   ]
 }
