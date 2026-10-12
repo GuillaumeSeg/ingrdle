@@ -1,12 +1,28 @@
-MIN_INGREDIENTS = 4
+MIN_INGREDIENTS = 3
 
 
 def parse_ingredients(ingredients_text: str) -> list[str]:
-    return [
-        ingredient.strip()
-        for ingredient in ingredients_text.split(",")
-        if ingredient.strip()
-    ]
+    ingredients: list[str] = []
+    closing_brackets: list[str] = []
+    opening_brackets = {"(": ")", "[": "]", "{": "}"}
+    ingredient_start = 0
+
+    for position, character in enumerate(ingredients_text):
+        if character in opening_brackets:
+            closing_brackets.append(opening_brackets[character])
+        elif closing_brackets and character == closing_brackets[-1]:
+            closing_brackets.pop()
+        elif character == "," and not closing_brackets:
+            ingredient = ingredients_text[ingredient_start:position].strip()
+            if ingredient:
+                ingredients.append(ingredient)
+            ingredient_start = position + 1
+
+    final_ingredient = ingredients_text[ingredient_start:].strip()
+    if final_ingredient:
+        ingredients.append(final_ingredient)
+
+    return ingredients
 
 
 def is_qualified(row: dict[str, str]) -> bool:

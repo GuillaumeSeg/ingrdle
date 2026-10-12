@@ -20,8 +20,10 @@ LEGACY_JSONL_PATH = DATA_DIR / "openfoodfacts-products.jsonl.gz"
 ARCHIVE_PATTERN = "*-openfoodfact-products.jsonl.gz"
 SAMPLE_SIZE = 3
 PROGRESS_UPDATE_INTERVAL = 10_000
+CACHE_SCHEMA_VERSION = 2
 CACHE_PATH = DATA_DIR / "qualified_products.jsonl"
 CACHE_METADATA_PATH = DATA_DIR / "qualified_products.meta.json"
+IMAGE_BASE_URL = "https://images.openfoodfacts.org/images/products"
 console = Console()
 
 
@@ -32,6 +34,48 @@ def find_latest_jsonl() -> Path | None:
     if not archives:
         return None
     return max(archives, key=lambda archive: archive.stat().st_mtime)
+
+
+def make_front_image_url(product: dict[str, object]) -> str:
+    direct_url = str(product.get("image_front_url") or "").strip()
+    if direct_url:
+        return direct_url
+
+    images = product.get("images")
+    if not isinstance(images, dict):
+        return ""
+    selected_images = images.get("selected")
+    if not isinstance(selected_images, dict):
+        return ""
+    front_images = selected_images.get("front")
+    if not isinstance(front_images, dict):
+        return ""
+
+    primary_language = str(product.get("lang") or "").strip()
+    preferred_languages = ["en", primary_language]
+    languages = list(dict.fromkeys(preferred_languages))
+    languages.extend(
+        sorted(language for language in front_images if language not in languages)
+    )
+
+    for language in languages:
+        image = front_images.get(language)
+        if not isinstance(image, dict):
+            continue
+        revision = str(image.get("rev") or "").strip()
+        code = str(product.get("code") or "").strip()
+        if not revision.isdigit() or not code.isdigit():
+            continue
+
+        code_segments: list[str] = []
+        while len(code) > 4:
+            code_segments.append(code[:3])
+            code = code[3:]
+        code_segments.append(code)
+        product_path = "/".join(code_segments)
+        return f"{IMAGE_BASE_URL}/{product_path}/front_{language}.{revision}.400.jpg"
+
+    return ""
 
 
 def to_english_filter_row(product: dict[str, object]) -> dict[str, str] | None:
@@ -47,18 +91,7 @@ def to_english_filter_row(product: dict[str, object]) -> dict[str, str] | None:
     elif not english_name or not english_ingredients:
         return None
 
-    image_url = str(product.get("image_url") or "").strip()
-    if not image_url:
-        images = product.get("images")
-        if isinstance(images, dict):
-            selected_images = images.get("selected")
-            if isinstance(selected_images, dict):
-                front_images = selected_images.get("front")
-                if isinstance(front_images, dict) and any(
-                    isinstance(image, dict) and image.get("imgid")
-                    for image in front_images.values()
-                ):
-                    image_url = "front-image-available"
+    image_url = make_front_image_url(product)
 
     return {
         "code": str(product.get("code") or ""),
@@ -76,6 +109,7 @@ def archive_identity(archive: Path) -> dict[str, str | int]:
         "archive": archive.name,
         "size": stat.st_size,
         "modified_ns": stat.st_mtime_ns,
+        "cache_schema_version": CACHE_SCHEMA_VERSION,
     }
 
 

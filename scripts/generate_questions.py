@@ -13,8 +13,10 @@ if __package__:
         find_latest_jsonl,
         scan_archive,
     )
+    from .product_filter import parse_ingredients
 else:
     from prepare_with_json import SAMPLE_SIZE, find_latest_jsonl, scan_archive
+    from product_filter import parse_ingredients
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 console = Console()
@@ -59,8 +61,11 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
         "seed": seed,
         "questions": [
             {
+                "product_code": product["code"],
                 "product_name": product["product_name"],
                 "brands": product["brands"],
+                "image_url": product["image_url"],
+                "ingredients": parse_ingredients(product["ingredients_text"]),
             }
             for product in selected
         ],

@@ -1,18 +1,65 @@
 {
   "date": "2026-10-12",
-  "seed": 12024303491588191308,
+  "seed": 11469308147300745921,
   "questions": [
     {
-      "product_name": "Tortillas complet volkoren",
-      "brands": "Jacquet"
+      "product_code": "4388860556834",
+      "product_name": "Soft Früchtchen",
+      "brands": "Rewe",
+      "ingredients": [
+        "Zucker",
+        "Glukosesirup",
+        "Palmöl",
+        "Fruchtsaft aus Fruchtsaftkonzentraten 6% (Zitrone, Orange, Erdbeere, Himbeere, Kirsche)",
+        "Säuerungsmittel Citronensäure",
+        "Gelatine (vom Schwein)",
+        "natürliche Aromen",
+        "Emulgator Lecithine",
+        "Holunderbeersaftkonzentrat",
+        "Farbstoffe (Kurkumin, Paprikaextrakt). Kann Spuren von Milch und Haselnüssen enthalten."
+      ]
     },
     {
-      "product_name": "Colby jack colby & monterey jack shredded cheese, colby jack",
-      "brands": "Food Club"
+      "product_code": "7613269268031",
+      "product_name": "French Dressing",
+      "brands": "ELSA, M-Classic, Migros",
+      "ingredients": [
+        "water",
+        "sunflower oil",
+        "spirit vinegar",
+        "white wine vinegar",
+        "egg yolk (breeding ground)",
+        "onion",
+        "seasoning powder (contains flavor enhancer: monosodium glutamate)",
+        "mustard",
+        "sugar",
+        "salt",
+        "thickener: e415",
+        "garlic",
+        "pepper extract"
+      ]
     },
     {
-      "product_name": "Fat Free Yogurt Peach&PassionFruit",
-      "brands": "Golden Acre"
+      "product_code": "5000169569733",
+      "product_name": "Malted wheats",
+      "brands": "Waitrose,Essential Waitrose",
+      "ingredients": [
+        "Whole wheat",
+        "sugar",
+        "invert sugar syrup. barley malt extract",
+        "salt",
+        "niacin",
+        "iron",
+        "vitamin B12",
+        "pantothenic acid (B5)",
+        "vitamin D",
+        "thiamin (BI)",
+        "riboflavin (B2)",
+        "follc acid",
+        "vitamin B6 ALLERGY ADVICE: For allergens",
+        "including cereals containing gluten",
+        "see ingredients in bold. May contain peanuts and nuts"
+      ]
     }
   ]
 }
