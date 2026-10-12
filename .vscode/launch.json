@@ -49,10 +49,20 @@
       "python": "${command:python.interpreterPath}"
     },
     {
-      "name": "Prepare: read JSONL",
+      "name": "Prepare: Read All JSONL & select products",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/scripts/prepare_with_json.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${command:python.interpreterPath}"
+    },
+    {
+      "name": "Prepare: Read JSONL max products & select products",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/prepare_with_json.py",
+      "args": ["--max-products", "55000"],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "python": "${command:python.interpreterPath}"

@@ -15,7 +15,7 @@ The first version is planned in English. Additional languages may follow later.
 - [`scripts/prepare_with_csv.py`](scripts/prepare_with_csv.py) downloads the Open Food Facts product export and randomly picks products with `lang` set to `en`, a product name, at least four ingredients in `ingredients_text`, and a non-invalid image URL.
 - [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) requests a random page from the Open Food Facts v2 API and applies the same qualification rules.
 - [`scripts/download_jsonl.py`](scripts/download_jsonl.py) downloads the compressed JSONL export to `scripts/data/` with a progress bar and a month-based filename.
-- [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) opens and checks the latest downloaded JSONL archive; product preparation is not implemented yet.
+- [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds a cache of qualified English products on its first full scan, then samples three products from that cache on later runs.
 - The downloaded compressed export is stored at `scripts/data/off_products.csv.gz` and is ignored by Git.
 - A 40-product test CSV can be generated at `scripts/data/off_products_test.csv` and used for quick runs.
 - `static/` is currently empty. There is no game frontend or generated question file yet.
@@ -56,6 +56,16 @@ Download the full compressed JSONL export (about 7 GB; the uncompressed data is 
 python scripts/download_jsonl.py
 python scripts/prepare_with_json.py
 ```
+
+The first full run scans the compressed JSONL archive and builds a cache, so it can take several minutes. Later runs sample from that cache instead of rescanning the archive. A live progress indicator shows the number of records scanned while building the cache.
+
+For a quicker, non-representative debug run, scan only the first 50,000 records without using or building the cache:
+
+```bash
+python scripts/prepare_with_json.py --max-products 50000
+```
+
+The qualified-products cache is rebuilt automatically when the source archive changes.
 
 On the first run, the script downloads the Open Food Facts export (about 1.28 GB) to `scripts/data/`. Later normal runs reuse the local download but scan it again. The test CSV contains only the columns needed for quick selection and is not a game-ready dataset.
 

@@ -1,4 +1,5 @@
 .DS_Store
 scripts/data/*.csv.gz
 scripts/data/*.jsonl.gz*
+scripts/data/qualified_products.*
 scripts/__pycache__/
