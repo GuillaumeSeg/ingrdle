@@ -23,6 +23,7 @@ CSV_URL = "https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.c
 CSV_PATH = "scripts/data/off_products.csv.gz"
 TEST_CSV_PATH = "scripts/data/off_products_test.csv"
 TEST_PRODUCT_FIELDS = (
+    "lang",
     "code",
     "brands",
     "product_name",
@@ -67,9 +68,9 @@ def download_csv() -> None:
 
 def progress_bar(current: int, total: int, width: int = 40) -> str:
     """Render an ASCII progress bar: [████████░░░░░░░░] 33%"""
-    filled = int(width * current / total)
+    pct = current / total * 100 if total else 100
+    filled = int(width * pct / 100)
     bar = "█" * filled + "░" * (width - filled)
-    pct = current / total * 100
     return f"\r  [{bar}] {pct:.0f}%  ({current:,} / {total:,})"
 
 
@@ -168,6 +169,13 @@ def main() -> None:
     if args.use_test_csv:
         if not os.path.exists(TEST_CSV_PATH):
             parser.error("Test CSV not found. Run with --create-test-csv first.")
+        with open_product_file(TEST_CSV_PATH) as test_csv:
+            headers = next(csv.reader(test_csv, delimiter=","), [])
+        if "lang" not in headers:
+            parser.error(
+                "Test CSV is outdated and missing the 'lang' column. "
+                "Regenerate it with --create-test-csv."
+            )
         winners = load_and_pick(n=3, csv_path=TEST_CSV_PATH, delimiter=",")
     else:
         download_csv()

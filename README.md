@@ -2,7 +2,7 @@
 
 A daily food trivia game about the ingredients hiding in everyday products.
 
-> **Project status: early prototype.** The repository currently contains the beginning of a Python data-preparation script. The game, question generation, and deployment are planned, but are not implemented yet.
+> **Project status: early prototype.** The repository contains Python data-preparation scripts and can generate daily product-question JSON files. The game interface, answer generation, and deployment are not implemented yet.
 
 ## The idea
 
@@ -12,16 +12,15 @@ The first version is planned in English. Additional languages may follow later.
 
 ## What's in the repository today
 
-- [`scripts/prepare_with_csv.py`](scripts/prepare_with_csv.py) downloads the Open Food Facts product export and randomly picks products with `lang` set to `en`, a product name, at least four ingredients in `ingredients_text`, and a non-invalid image URL.
-- [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) requests a random page from the Open Food Facts v2 API and applies the same qualification rules.
-- [`scripts/download_jsonl.py`](scripts/download_jsonl.py) downloads the compressed JSONL export to `scripts/data/` with a progress bar and a month-based filename.
-- [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds a cache of qualified English products on its first full scan, then samples three products from that cache on later runs.
-- [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three randomly selected product questions to `questions/YYYY-MM-DD.json` and records the selection seed.
-- The downloaded compressed export is stored at `scripts/data/off_products.csv.gz` and is ignored by Git.
-- A 40-product test CSV can be generated at `scripts/data/off_products_test.csv` and used for quick runs.
-- `static/` is currently empty. There is no game frontend or generated question file yet.
+- [`scripts/prepare_with_csv.py`](scripts/prepare_with_csv.py) downloads the CSV export and randomly selects products with English names, enough ingredients, and a front image.
+- [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) selects qualified products from a random page of the Open Food Facts API.
+- [`scripts/download_jsonl.py`](scripts/download_jsonl.py) downloads the compressed JSONL export with a progress bar and month-based filename.
+- [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds or reuses a cache of qualified English products and prints a random sample. Its `--max-products` option is for quick, non-representative debug scans.
+- [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three date-specific product questions to `static/questions-YYYY-MM-DD.json` and records the random seed.
+- Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
+- The CSV test fixture contains 200 rows. Older fixtures without the `lang` column must be regenerated before `--use-test-csv` can filter them.
 
-The CSV and API preparation scripts select products but do not create game questions. `generate_questions.py` writes the initial daily JSON with three product names and brands.
+The generated questions currently contain only each product's English name and brand. Hidden ingredients, answer choices, trivia, and the game itself are not generated yet.
 
 ## Run the prototype
 
@@ -39,10 +38,11 @@ Create a small test dataset once, then run against it without scanning the full 
 ```bash
 python scripts/prepare_with_csv.py --create-test-csv
 python scripts/prepare_with_csv.py --use-test-csv
-
 ```
 
-Select qualified products from a random page of the API:
+The CSV test fixture contains 200 products. Regenerating it requires the full CSV export; the command downloads that export if it is not already present.
+
+Select qualified products from a random API page:
 
 ```bash
 python scripts/prepare_with_api.py
@@ -51,14 +51,14 @@ python scripts/prepare_with_api.py --page-size 100 --count 3
 
 The script makes two API requests: one to get the available page count, then one to fetch a randomly selected page. The API currently exposes at most 100 pages per search (up to 10,000 products at the default page size), so the selection is random within that result window, not the full 4.8-million-product catalog. With the documented search limit of 10 requests per minute, avoid running it more than five times per minute. The SDK does not currently expose this unfiltered `/api/v2/search` endpoint, so this request uses the API directly; the official SDK remains available for other product operations.
 
-Download the full compressed JSONL export (about 7 GB; the uncompressed data is about 43 GB):
+Download the full compressed JSONL export (about 13 GB compressed and 43 GB uncompressed in the current export):
 
 ```bash
 python scripts/download_jsonl.py
 python scripts/prepare_with_json.py
 ```
 
-The first full run scans the compressed JSONL archive and builds a cache, so it can take several minutes. Later runs sample from that cache instead of rescanning the archive. A live progress indicator shows the number of records scanned while building the cache.
+The first full run scans the compressed JSONL archive and builds a cache; it took about 23 minutes on the current machine. Later runs sample from the cache instead of rescanning the archive. A live progress indicator shows the number of records scanned while building the cache.
 
 For a quicker, non-representative debug run, scan only the first 50,000 records without using or building the cache:
 
@@ -68,7 +68,7 @@ python scripts/prepare_with_json.py --max-products 50000
 
 The qualified-products cache is rebuilt automatically when the source archive changes.
 
-Generate today's question file, or choose a date explicitly:
+Generate tomorrow's question file, today's file, or choose a date explicitly:
 
 ```bash
 python scripts/generate_questions.py
@@ -76,9 +76,7 @@ python scripts/generate_questions.py --date 2026-10-12
 python scripts/generate_questions.py --tomorrow
 ```
 
-Each run chooses a fresh random seed, so regenerating the same date can produce different products. The seed is saved in the JSON; pass it with `--seed` to reproduce that selection.
-
-On the first run, the script downloads the Open Food Facts export (about 1.28 GB) to `scripts/data/`. Later normal runs reuse the local download but scan it again. The test CSV contains only the columns needed for quick selection and is not a game-ready dataset.
+Output is written to `static/questions-YYYY-MM-DD.json`. Each run chooses a fresh random seed, so regenerating the same date can produce different products. The seed is saved in the JSON; pass it with `--seed` to reproduce that selection.
 
 ## Planned gameplay
 

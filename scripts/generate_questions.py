@@ -16,7 +16,7 @@ if __package__:
 else:
     from prepare_with_json import SAMPLE_SIZE, find_latest_jsonl, scan_archive
 
-QUESTIONS_DIR = Path(__file__).resolve().parent.parent / "questions"
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 console = Console()
 
 
@@ -66,8 +66,8 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
         ],
     }
 
-    QUESTIONS_DIR.mkdir(parents=True, exist_ok=True)
-    output_path = QUESTIONS_DIR / f"{target_date.isoformat()}.json"
+    STATIC_DIR.mkdir(parents=True, exist_ok=True)
+    output_path = STATIC_DIR / f"questions-{target_date.isoformat()}.json"
     temporary_path = output_path.with_suffix(".json.part")
     with temporary_path.open("w", encoding="utf-8") as output:
         json.dump(document, output, ensure_ascii=False, indent=2)
