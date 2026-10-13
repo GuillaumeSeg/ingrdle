@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-14",
+  "seed": 7846961587066883305,
+  "questions": [
+    {
+      "product_code": "0018787950036",
+      "product_name": "4-in-1 Tea Tree Organic Sugar Soap",
+      "brands": "Dr. Bronner's",
+      "image_url": "https://images.openfoodfacts.org/images/products/001/878/795/0036/front_en.5.400.jpg",
+      "ingredients": [
+        "Organic Fair Trade Sugar",
+        "Organic Shikakai",
+        "Organic White Grape Juice",
+        "Organic Fair Trade Olive Oil",
+        "Organic Fair Trade Coconut Oil",
+        "Organic Hemp Oil",
+        "Organic Fair Trade Palm Kernel Oil"
+      ],
+      "hidden_ingredient_index": 1,
+      "hidden_ingredient": "Organic Shikakai",
+      "choices": [
+        "Organic Shikakai",
+        "Organic Amla Powder",
+        "Organic Neem Leaf",
+        "Organic Reetha Extract"
+      ]
+    },
+    {
+      "product_code": "4088600275871",
+      "product_name": "choclate icecream",
+      "brands": "Aldi",
+      "image_url": "https://images.openfoodfacts.org/images/products/408/860/027/5871/front_en.21.400.jpg",
+      "ingredients": [
+        "Partially Reconstituted Buttermilk Powder",
+        "Whole Milk",
+        "MARSHMALLOW SWIRL (14%) (Glucose Syrup, Sugar, Water, Cornflour, Colour: Calcium Carbonate; Gelling Agent: Pectins Flavouring, Salt)",
+        "DOUBLE CREAM (11%) (MILK)",
+        "SALTED CARAMEL RIPPLE (9%) [Water, Sugar, Glucose-Fructose Syrup, Sweetened Condensed Skimmed Milk, Invert Sugar Syrup Unsalted Butter (Milk), Cornflour, Salt, Colour: Plain Caramel; Gelling Agent: Pectins; Flavouring]",
+        "Sugar",
+        "CHOCOLATE FLAVOUR MONKEY FACE PIECES (7%) (Sugar, Coconut Fat, Fat Reduced Cocoa Powdert, Anhydrous Milk Fat, Emulsifier: Lecithins (Soya), Natural Vanilla Flavouring)",
+        "DARK CHOCOLATE (4%) (Cocoa Masst, Sugar, Cocoa Buttert, Emulsifier Lecithins (Soya); Flavouring)",
+        "Fat Reduced Cocoa Powdert",
+        "Emulsifier: Mono-and Diglycerides of Fatty Acids; Stabilisers: Guar Gum",
+        "Sodium Alginate."
+      ],
+      "hidden_ingredient_index": 2,
+      "hidden_ingredient": "MARSHMALLOW SWIRL (14%) (Glucose Syrup, Sugar, Water, Cornflour, Colour: Calcium Carbonate; Gelling Agent: Pectins Flavouring, Salt)",
+      "choices": [
+        "CARAMEL SWIRL (12%) (Glucose Syrup, Sugar, Water, Modified Starch, Colour: Plain Caramel; Gelling Agent: Pectins; Flavouring, Salt)",
+        "HONEYCOMB PIECES (8%) (Sugar, Glucose Syrup, Sodium Bicarbonate, Sunflower Oil, Flavouring)",
+        "MARSHMALLOW SWIRL (14%) (Glucose Syrup, Sugar, Water, Cornflour, Colour: Calcium Carbonate; Gelling Agent: Pectins Flavouring, Salt)",
+        "FUDGE SAUCE (10%) (Sugar, Glucose Syrup, Sweetened Condensed Milk, Vegetable Fat, Water, Cocoa Powder, Emulsifier: Lecithins (Sunflower); Flavouring, Salt)"
+      ]
+    },
+    {
+      "product_code": "0194346002092",
+      "product_name": "Instant mashed potatoes",
+      "brands": "Great value",
+      "image_url": "https://images.openfoodfacts.org/images/products/019/434/600/2092/front_en.24.400.jpg",
+      "ingredients": [
+        "DEHYDRATED POTATOES",
+        "POTATO FLAKES",
+        "MONO AND DIGLYCERIDES",
+        "SODIUM ACID PYROPHOSPHATE",
+        "SODIUM BISULFITE",
+        "CITRIC ACID"
+      ],
+      "hidden_ingredient_index": 4,
+      "hidden_ingredient": "SODIUM BISULFITE",
+      "choices": [
+        "POTASSIUM BISULFITE",
+        "SODIUM SULFITE",
+        "SODIUM BISULFITE",
+        "SODIUM METABISULFITE"
+      ]
+    }
+  ]
+}

@@ -102,31 +102,49 @@ def _valid_candidates(candidates: list[str], excluded: set[str]) -> list[str]:
     return valid
 
 
+def _match_hidden_format(candidate: str, hidden_ingredient: str) -> str:
+    if "%" in hidden_ingredient:
+        return candidate
+
+    candidate = re.sub(r"\s*\(\s*\d+(?:[.,]\d+)?\s*%\s*\)\s*$", "", candidate)
+    candidate = re.sub(r"\s+\d+(?:[.,]\d+)?\s*%\s*$", "", candidate)
+    return " ".join(candidate.split())
+
+
 def _ai_distractors(
     hidden_ingredient: str,
     product_name: str,
     excluded_ingredients: list[str],
     count: int,
+    context_pool: list[str] | None = None,
 ) -> list[str]:
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is not set")
 
     excluded_text = ", ".join(excluded_ingredients)
+    pool_hint = ""
+    if context_pool:
+        pool_hint = (
+            "\n\nCommon related ingredients include: "
+            f"{', '.join(context_pool)}. Use these as inspiration, not as a "
+            "required answer list."
+        )
     prompt = (
         f"The hidden ingredient is '{hidden_ingredient}' in the food product "
         f"'{product_name}'. Suggest exactly {count} plausible but incorrect "
         "food ingredients that could work as quiz distractors.\n\n"
         "Rules:\n"
         "- Use real ingredient-label terms in English.\n"
-        "- **Mimic the format of the hidden ingredient**: if it has a "
-        "percentage, include a plausible percentage. If it has a parenthetical "
-        "(e.g. 'xanthan gum (1.6%)'), include a parenthetical with a "
-        "different plausible value. If it's plain, keep it plain.\n"
+        "- Match only formatting present in the hidden ingredient. If it has a "
+        "percentage, include a different plausible percentage in the same "
+        "format. Otherwise, do not add percentages, quantities, codes, or "
+        "parenthetical details; keep each distractor as a plain ingredient name.\n"
         "- Do NOT use the hidden ingredient itself, its synonyms, or any "
         f"ingredient in the excluded list.\n"
-        "- Return only a JSON array of {count} strings, nothing else.\n\n"
+        f"- Return only a JSON array of {count} strings, nothing else.\n\n"
         f"Excluded ingredients: [{excluded_text}]"
+        f"{pool_hint}"
     )
     response = requests.post(
         OPENROUTER_URL,
@@ -181,36 +199,44 @@ def generate_distractors(
     }
     category = INGREDIENT_CATEGORIES.get(normalized_hidden)
     pool = list(CATEGORY_POOLS[category]) if category is not None else []
-    static_candidates = _valid_candidates(pool, excluded)
-    selected = rng.sample(static_candidates, min(count, len(static_candidates)))
+    selected: list[str] = []
+    try:
+        suggestions = _ai_distractors(
+            hidden_ingredient,
+            product_name,
+            [*ingredients, hidden_ingredient],
+            count,
+            context_pool=pool,
+        )
+        suggestions = [
+            _match_hidden_format(suggestion, hidden_ingredient)
+            for suggestion in suggestions
+        ]
+        ai_candidates = _valid_candidates(suggestions, excluded)
+        selected.extend(ai_candidates[:count])
+    except (
+        IndexError,
+        KeyError,
+        requests.RequestException,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    ) as error:
+        if os.environ.get("OPENROUTER_API_KEY", "").strip():
+            console.print(
+                f"[yellow]OpenRouter distractors unavailable; using local "
+                f"fallbacks ({error}).[/yellow]"
+            )
 
     missing_count = count - len(selected)
     if missing_count:
-        try:
-            suggestions = _ai_distractors(
-                hidden_ingredient,
-                product_name,
-                [*ingredients, hidden_ingredient, *selected],
-                missing_count,
-            )
-            ai_candidates = _valid_candidates(
-                suggestions,
-                excluded | {normalize_ingredient(item) for item in selected},
-            )
-            selected.extend(ai_candidates[:missing_count])
-        except (
-            IndexError,
-            KeyError,
-            requests.RequestException,
-            RuntimeError,
-            TypeError,
-            ValueError,
-        ) as error:
-            if os.environ.get("OPENROUTER_API_KEY", "").strip():
-                console.print(
-                    f"[yellow]OpenRouter distractors unavailable; using local "
-                    f"fallbacks ({error}).[/yellow]"
-                )
+        static_candidates = _valid_candidates(
+            pool,
+            excluded | {normalize_ingredient(item) for item in selected},
+        )
+        selected.extend(
+            rng.sample(static_candidates, min(missing_count, len(static_candidates)))
+        )
 
     missing_count = count - len(selected)
     if missing_count:

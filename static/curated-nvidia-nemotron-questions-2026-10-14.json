@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-14",
+  "seed": 6572138285579532991,
+  "questions": [
+    {
+      "product_code": "0761657904164",
+      "product_name": "GARLIC & HERB GOAT CHEESE",
+      "brands": "MONTCHÈVRE",
+      "image_url": "https://images.openfoodfacts.org/images/products/076/165/790/4164/front_en.13.400.jpg",
+      "ingredients": [
+        "Pasteurized goat milk",
+        "marjoram",
+        "oregano",
+        "garlic powder",
+        "salt",
+        "cheese cultures",
+        "microbial rennet."
+      ],
+      "hidden_ingredient_index": 4,
+      "hidden_ingredient": "salt",
+      "choices": [
+        "black pepper",
+        "salt",
+        "citric acid (0.3%)",
+        "natural flavor"
+      ]
+    },
+    {
+      "product_code": "0860004906711",
+      "product_name": "Peach Gains Berry Gummies",
+      "brands": "Bearvana",
+      "image_url": "https://images.openfoodfacts.org/images/products/086/000/490/6711/front_en.3.400.jpg",
+      "ingredients": [
+        "Glucose syrup",
+        "sugar",
+        "water",
+        "pectin",
+        "citric acid",
+        "sodium citrate",
+        "natural flavors",
+        "color (purple carrot juice concentrate)",
+        "maple root extract",
+        "Asian ginseng root extract",
+        "Anise seed extract",
+        "Moringa whole plant extract",
+        "Saw palmetto fruit extract",
+        "Fenugreek seed extract",
+        "Black cohosh root extract",
+        "Kelp stem and leaf extract"
+      ],
+      "hidden_ingredient_index": 15,
+      "hidden_ingredient": "Kelp stem and leaf extract",
+      "choices": [
+        "Spirulina powder (0.8%)",
+        "Kelp stem and leaf extract",
+        "Dulse leaf powder (0.5%)",
+        "Chlorella vulgaris extract (1.2%)"
+      ]
+    },
+    {
+      "product_code": "0850005872177",
+      "product_name": "Van Leeuwen cookies & cream ice cream",
+      "brands": "Van Leeuwen",
+      "image_url": "https://images.openfoodfacts.org/images/products/085/000/587/2177/front_en.8.400.jpg",
+      "ingredients": [
+        "cream",
+        "milk",
+        "cane sugar",
+        "egg yolks",
+        "unbleached unenriched wheat flour",
+        "coconut oil",
+        "cocoa processed with alkali",
+        "sunflower oil",
+        "vanilla extract",
+        "sea salt",
+        "salt",
+        "baking soda",
+        "vanilla",
+        "sunflower lecithin"
+      ],
+      "hidden_ingredient_index": 11,
+      "hidden_ingredient": "baking soda",
+      "choices": [
+        "guar gum (0.3%)",
+        "tapioca syrup (5%)",
+        "natural flavor",
+        "baking soda"
+      ]
+    }
+  ]
+}

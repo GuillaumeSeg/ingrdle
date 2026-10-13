@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-14",
+  "seed": 6632158159854449668,
+  "questions": [
+    {
+      "product_code": "0015000179243",
+      "product_name": "YOGURT Banana",
+      "brands": "Gerber",
+      "image_url": "https://images.openfoodfacts.org/images/products/001/500/017/9243/front_en.3.400.jpg",
+      "ingredients": [
+        "CULTURED WHOLE MILK",
+        "BANANA PUREE",
+        "SUGAR",
+        "CORNSTARCH",
+        "NONFAT MILK",
+        "PECTIN",
+        "GELATIN",
+        "NATURAL FLAVOR",
+        "TURMERIC EXTRACT FOR COLOR",
+        "VITAMIN A PALMITATE",
+        "VITAMIN D3"
+      ],
+      "hidden_ingredient_index": 9,
+      "hidden_ingredient": "VITAMIN A PALMITATE",
+      "choices": [
+        "VITAMIN E ACETATE (10.0%)",
+        "SODIUM BENZOATE (0.2%)",
+        "CARRAGEENAN (0.5%)",
+        "VITAMIN A PALMITATE"
+      ]
+    },
+    {
+      "product_code": "4099100182309",
+      "product_name": "Soy Sauce",
+      "brands": "Fusia",
+      "image_url": "https://images.openfoodfacts.org/images/products/409/910/018/2309/front_en.4.400.jpg",
+      "ingredients": [
+        "wheat",
+        "soybeans",
+        "sodium benzoate"
+      ],
+      "hidden_ingredient_index": 2,
+      "hidden_ingredient": "sodium benzoate",
+      "choices": [
+        "citric acid (0.3%)",
+        "sodium benzoate",
+        "potassium chloride (0.5%)",
+        "natural flavors"
+      ]
+    },
+    {
+      "product_code": "4008258235003",
+      "product_name": "Dried figs",
+      "brands": "Seeberger",
+      "image_url": "https://images.openfoodfacts.org/images/products/400/825/823/5003/front_de.37.400.jpg",
+      "ingredients": [
+        "Dried figs",
+        "not sulphited",
+        "without addition"
+      ],
+      "hidden_ingredient_index": 1,
+      "hidden_ingredient": "not sulphited",
+      "choices": [
+        "sunflower oil (1.5%)",
+        "potassium sorbate (0.2%)",
+        "not sulphited",
+        "rice flour (2%)"
+      ]
+    }
+  ]
+}

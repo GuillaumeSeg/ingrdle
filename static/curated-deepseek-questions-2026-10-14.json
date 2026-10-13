@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-14",
+  "seed": 1900580675682788020,
+  "questions": [
+    {
+      "product_code": "5453001001869",
+      "product_name": "Wikinger Röllchen",
+      "brands": "Pascal Ernest",
+      "image_url": "https://images.openfoodfacts.org/images/products/545/300/100/1869/front_en.12.400.jpg",
+      "ingredients": [
+        "Zucker",
+        "pflanzliche Fette (Palm, Palmkern, Kokos)",
+        "Eier",
+        "Weizenmehl",
+        "Rapsöl",
+        "Wasser",
+        "Sojabohnen",
+        "Glukosesirup",
+        "Aprikosenkerne",
+        "Glukose-Fruktose-Sirup",
+        "Weizenstärke",
+        "Feucht - haltemittel (Sorbit, Glycerin, Invertase)",
+        "Himbeer - püreekonzentrat 1,1%",
+        "Sojamehl",
+        "Magermilchpulver",
+        "fettarmes Kakaopulver 0,7%",
+        "Verdickungsmittel Xanthan",
+        "Emulgatoren (Mono - Speisefettsäuren, Sorbitantristearat, Speisesalz, Geliermittel (Pektin, Natriumalginat), Saureregulatoren (Citronensäure, Natriumcitrate), Backtriebmittel (Dinatriumdiphosphat, Natrium - hydrogencarbonat), natürliches Aroma, Ethylalkohol, Frucht - und Pflanzenextrakte (Karotte, schwarze Johannisbeere), Aroma, Konservierungsstoff Kaliumsorbat. &quot;aus Bodenhaltung und Dalecithin)",
+        "Kann Spuren von Schalenfrüchten und Sulfit enthalten."
+      ],
+      "hidden_ingredient_index": 13,
+      "hidden_ingredient": "Sojamehl",
+      "choices": [
+        "Sojamehl",
+        "Hafervollkornmehl (3.1%)",
+        "Weizenkleie (1.8%)",
+        "Sojagranulat (2.4%)"
+      ]
+    },
+    {
+      "product_code": "0007664000070",
+      "product_name": "Empanadas de Ropa Vieja",
+      "brands": "Trader Joe's",
+      "image_url": "https://images.openfoodfacts.org/images/products/000/766/400/0070/front_en.3.400.jpg",
+      "ingredients": [
+        "Cassava Crust (Cassava, Cassava Flour, Sunflower Oil, Sugar, Egg White, Salt)",
+        "Filling (Beef, Water, Tomato Paste [Tomato Paste, Citric Acid (Acidulant)], Diced Onion, Diced Red Bell Peppers, Diced Green Bell Peppers, Sea Salt, Garlic Powder, Distilled White Vinegar, Oregano, Coriander Leaf)",
+        "Sunflower Oil"
+      ],
+      "hidden_ingredient_index": 0,
+      "hidden_ingredient": "Cassava Crust (Cassava, Cassava Flour, Sunflower Oil, Sugar, Egg White, Salt)",
+      "choices": [
+        "Yuca Crust (Yuca, Yuca Flour, Palm Oil, Cane Sugar, Egg White, Kosher Salt)",
+        "Plantain Crust (Plantain, Plantain Flour, Coconut Oil, Brown Sugar, Egg Yolk, Sea Salt)",
+        "Cassava Crust (Cassava, Cassava Flour, Sunflower Oil, Sugar, Egg White, Salt)",
+        "Corn Crust (Corn, Corn Flour, Canola Oil, Sugar, Egg White, Salt)"
+      ]
+    },
+    {
+      "product_code": "5010511478545",
+      "product_name": "Wham Softies",
+      "brands": "Barratt",
+      "image_url": "https://images.openfoodfacts.org/images/products/501/051/147/8545/front_en.5.400.jpg",
+      "ingredients": [
+        "Glucose Syrup",
+        "Sugar",
+        "Modified Potato Starch",
+        "Cornflour",
+        "Acids (Malic Acid, Citric Acid)",
+        "Coloured Sugar Crystals [Sugar, Vegetable Oil (Shea, Palm Emulsifier (Sunflower Lecithins)), Plant Extracts (Safflower Spirulina, Lemon, Apple)]",
+        "Maltodextrin",
+        "Flavouring",
+        "Potato Protein",
+        "Colour (Anthocyanins)",
+        "Hydrolysed P Protein",
+        "Glazing Agent (Carnauba Wax)",
+        "Acidity Reg Pes (Tricalcium Citrate). ition Information Typical Values Per 100g es 0.39"
+      ],
+      "hidden_ingredient_index": 12,
+      "hidden_ingredient": "Acidity Reg Pes (Tricalcium Citrate). ition Information Typical Values Per 100g es 0.39",
+      "choices": [
+        "Anti-caking Agent (Calcium Stearate) 0.42",
+        "Acidity Reg Pes (Tricalcium Citrate). ition Information Typical Values Per 100g es 0.39",
+        "Firming Agent (Calcium Lactate) 0.45",
+        "Stabiliser (Dicalcium Phosphate) 0.35"
+      ]
+    }
+  ]
+}

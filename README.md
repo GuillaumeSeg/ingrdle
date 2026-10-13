@@ -20,7 +20,7 @@ The first version is planned in English. Additional languages may follow later.
 - Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
 - The CSV test fixture contains 200 rows. Older fixtures without the `lang` column must be regenerated before `--use-test-csv` can filter them.
 
-Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use curated ingredient-family pools first, then OpenRouter, with local fallback choices if the API is unavailable or not configured. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated yet.
+Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use OpenRouter first, with a matching curated ingredient-family pool as prompt context; curated pools and local fallback choices fill any remaining slots if the API is unavailable or returns too few valid suggestions. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated yet.
 
 ## Run the prototype
 
@@ -97,6 +97,25 @@ Output is written to `static/questions-YYYY-MM-DD.json`. Each run chooses a fres
 
 These are design goals, not features available in the current prototype.
 
+Planned: Sudden Death (weekly)
+A weekly variant with a single product and escalating difficulty.
+
+Format: 8 rounds on one product, 5 lives.
+
+Rounds	Format	Difficulty
+1–2	Yes / No (is this ingredient in the product?)	Easy
+3–4	2 choices	Medium
+5–6	3 choices	Hard
+7–8	4 choices (mimic-format distractors)	Very hard
+
+One life lost per wrong answer.
+ALIVE if all 8 ingredients are revealed with ≥ 1 life remaining.
+DEAD at round N → "Killed at round N/8" (shareable).
+No points — binary outcome (ALIVE / DEAD) + weekly streak.
+Uses the same pool and distractor pipeline as the classic daily mode.
+Target duration: ~90 seconds.
+This mode reuses all existing data (products, hidden ingredients, choices) without any additional generation cost.
+
 ### Production answer security
 
 The prototype JSON includes `hidden_ingredient` for local development. Do not publish that answer in a static file served to players: anything sent to the browser can be inspected. In production, serve only the ingredient list and answer choices publicly; keep the correct answer in a private answer key or validate guesses on the server.
@@ -105,7 +124,7 @@ The prototype JSON includes `hidden_ingredient` for local development. Do not pu
 
 1. Download and filter the English Open Food Facts export.
 2. Select products with enough ingredients and a front image.
-3. Choose three distractors from curated ingredient-family pools, then use OpenRouter for missing or exotic ingredients; validate all choices and fall back locally if needed.
+3. Ask OpenRouter for three distractors, using curated ingredient-family pools as context; validate all choices and fill any missing choices from local pools.
 4. Generate ingredient trivia, then review it manually.
 5. Export daily questions as static JSON for the game to consume.
 
