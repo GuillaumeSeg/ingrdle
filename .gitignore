@@ -1,7 +1,6 @@
 .DS_Store
 .env
 .env.*
-!.env.example
 scripts/data/*.csv.gz
 scripts/data/*.jsonl.gz*
 scripts/data/qualified_products.*

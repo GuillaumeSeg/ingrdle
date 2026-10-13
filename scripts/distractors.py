@@ -116,10 +116,17 @@ def _ai_distractors(
     prompt = (
         f"The hidden ingredient is '{hidden_ingredient}' in the food product "
         f"'{product_name}'. Suggest exactly {count} plausible but incorrect "
-        "food ingredients that could work as quiz distractors. Use real "
-        "ingredient-label terms in English. Do not use the hidden ingredient, "
-        "synonyms, or any ingredient in the excluded list. Return only a JSON "
-        f"array of {count} strings. Excluded ingredients: [{excluded_text}]"
+        "food ingredients that could work as quiz distractors.\n\n"
+        "Rules:\n"
+        "- Use real ingredient-label terms in English.\n"
+        "- **Mimic the format of the hidden ingredient**: if it has a "
+        "percentage, include a plausible percentage. If it has a parenthetical "
+        "(e.g. 'xanthan gum (1.6%)'), include a parenthetical with a "
+        "different plausible value. If it's plain, keep it plain.\n"
+        "- Do NOT use the hidden ingredient itself, its synonyms, or any "
+        f"ingredient in the excluded list.\n"
+        "- Return only a JSON array of {count} strings, nothing else.\n\n"
+        f"Excluded ingredients: [{excluded_text}]"
     )
     response = requests.post(
         OPENROUTER_URL,
