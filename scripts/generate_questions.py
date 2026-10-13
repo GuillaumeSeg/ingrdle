@@ -46,29 +46,37 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
         raise FileNotFoundError("No JSONL archive found. Run download_jsonl.py first.")
 
     seed = secrets.randbits(64) if seed is None else seed
+    rng = random.Random(seed)
     _, qualified_count, selected, cache_built = scan_archive(
         archive,
         max_products=None,
-        rng=random.Random(seed),
+        rng=rng,
     )
     if len(selected) < SAMPLE_SIZE:
         raise ValueError(
             f"Need {SAMPLE_SIZE} qualified products, found {qualified_count}."
         )
 
-    document = {
-        "date": target_date.isoformat(),
-        "seed": seed,
-        "questions": [
+    questions = []
+    for product in selected:
+        ingredients = parse_ingredients(product["ingredients_text"])
+        hidden_ingredient_index = rng.randrange(len(ingredients))
+        questions.append(
             {
                 "product_code": product["code"],
                 "product_name": product["product_name"],
                 "brands": product["brands"],
                 "image_url": product["image_url"],
-                "ingredients": parse_ingredients(product["ingredients_text"]),
+                "ingredients": ingredients,
+                "hidden_ingredient_index": hidden_ingredient_index,
+                "hidden_ingredient": ingredients[hidden_ingredient_index],
             }
-            for product in selected
-        ],
+        )
+
+    document = {
+        "date": target_date.isoformat(),
+        "seed": seed,
+        "questions": questions,
     }
 
     STATIC_DIR.mkdir(parents=True, exist_ok=True)

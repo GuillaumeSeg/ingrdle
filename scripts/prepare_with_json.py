@@ -37,7 +37,9 @@ def find_latest_jsonl() -> Path | None:
 
 
 def make_front_image_url(product: dict[str, object]) -> str:
-    direct_url = str(product.get("image_front_url") or "").strip()
+    direct_url = str(
+        product.get("image_url") or product.get("image_front_url") or ""
+    ).strip()
     if direct_url:
         return direct_url
 

@@ -16,11 +16,11 @@ The first version is planned in English. Additional languages may follow later.
 - [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) selects qualified products from a random page of the Open Food Facts API.
 - [`scripts/download_jsonl.py`](scripts/download_jsonl.py) downloads the compressed JSONL export with a progress bar and month-based filename.
 - [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds or reuses a cache of qualified English products and prints a random sample. Its `--max-products` option is for quick, non-representative debug scans.
-- [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three date-specific product questions, including image URLs, to `static/questions-YYYY-MM-DD.json` and records the random seed.
+- [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three date-specific product questions, including image URLs and a randomly selected hidden ingredient, to `static/questions-YYYY-MM-DD.json` and records the random seed.
 - Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
 - The CSV test fixture contains 200 rows. Older fixtures without the `lang` column must be regenerated before `--use-test-csv` can filter them.
 
-Each generated question contains the product code, English name, brand, front-image URL, and an ordered array of top-level ingredient strings. Commas inside parentheses or brackets stay within their ingredient. Hidden-ingredient selection, answer choices, trivia, and the game itself are not generated yet.
+Each generated question contains the product code, English name, brand, front-image URL, and an ordered array of top-level ingredient strings. Commas inside parentheses or brackets stay within their ingredient. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in that array, and `hidden_ingredient` contains its value. Answer choices, trivia, and the game itself are not generated yet.
 
 ## Run the prototype
 
@@ -92,7 +92,7 @@ These are design goals, not features available in the current prototype.
 
 1. Download and filter the English Open Food Facts export.
 2. Select products with enough ingredients and a front image.
-3. Hide an ingredient and create three plausible distractors, using taxonomy suggestions and fallback rules.
+3. Use the generated hidden ingredient to create three plausible distractors, using taxonomy suggestions and fallback rules.
 4. Generate ingredient trivia, then review it manually.
 5. Export daily questions as static JSON for the game to consume.
 

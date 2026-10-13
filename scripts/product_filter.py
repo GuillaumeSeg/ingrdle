@@ -1,7 +1,18 @@
+import re
+
 MIN_INGREDIENTS = 3
+PRECAUTIONARY_STATEMENT_RE = re.compile(
+    r"\b(?:may contain|contains traces of|peut contenir|peuvent contenir|"
+    r"puede(?:n)? contener|contiene trazas de)\b",
+    re.IGNORECASE,
+)
 
 
 def parse_ingredients(ingredients_text: str) -> list[str]:
+    precautionary_statement = PRECAUTIONARY_STATEMENT_RE.search(ingredients_text)
+    if precautionary_statement is not None:
+        ingredients_text = ingredients_text[: precautionary_statement.start()]
+
     ingredients: list[str] = []
     closing_brackets: list[str] = []
     opening_brackets = {"(": ")", "[": "]", "{": "}"}
@@ -13,6 +24,13 @@ def parse_ingredients(ingredients_text: str) -> list[str]:
         elif closing_brackets and character == closing_brackets[-1]:
             closing_brackets.pop()
         elif character == "," and not closing_brackets:
+            if (
+                position > 0
+                and position + 1 < len(ingredients_text)
+                and ingredients_text[position - 1].isdigit()
+                and ingredients_text[position + 1].isdigit()
+            ):
+                continue
             ingredient = ingredients_text[ingredient_start:position].strip()
             if ingredient:
                 ingredients.append(ingredient)

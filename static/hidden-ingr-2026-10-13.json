@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-13",
+  "seed": 2945297737944803718,
+  "questions": [
+    {
+      "product_code": "5010251621164",
+      "product_name": "The best yoghurt",
+      "brands": "Morrisons",
+      "image_url": "https://images.openfoodfacts.org/images/products/501/025/162/1164/front_en.3.400.jpg",
+      "ingredients": [
+        "Yogurt (milk)",
+        "Senga strawberries (19%)",
+        "whipping cream (milk) (13%)",
+        "sugar",
+        "water",
+        "rice starch",
+        "lemon juice from concentrate",
+        "flavouring."
+      ],
+      "hidden_ingredient_index": 6,
+      "hidden_ingredient": "lemon juice from concentrate"
+    },
+    {
+      "product_code": "4099200016436",
+      "product_name": "Croquettes",
+      "brands": "Farmer's Gold",
+      "image_url": "https://images.openfoodfacts.org/images/products/409/920/001/6436/front_en.4.400.jpg",
+      "ingredients": [
+        "Kartoffeln 88%",
+        "Sonnenblumenöl 7%",
+        "Kartoffelstärke",
+        "jodiertes Salz (Speisesalz Kaliumjodid)",
+        "Dextrose",
+        "Gewürze",
+        "_Vollmilchpulver_"
+      ],
+      "hidden_ingredient_index": 5,
+      "hidden_ingredient": "Gewürze"
+    },
+    {
+      "product_code": "0810067726962",
+      "product_name": "Chicken Pot Pie",
+      "brands": "By Chef Ramsey",
+      "image_url": "https://images.openfoodfacts.org/images/products/081/006/772/6962/front_en.4.400.jpg",
+      "ingredients": [
+        "Water",
+        "milk",
+        "cream",
+        "carrots",
+        "mushrooms",
+        "potatoes",
+        "peas",
+        "salt",
+        "salted butter",
+        "celery",
+        "onion",
+        "unbleached enriched wheat flour",
+        "chicken broth concentrate",
+        "modified food starch",
+        "parsley",
+        "xanthan gum",
+        "thyme",
+        "ground white pepper",
+        "black pepper",
+        "enriched unbleached wheat flour",
+        "butter",
+        "sea salt",
+        "cooked chicken",
+        "tapioca starch",
+        "dextrose",
+        "onion powder",
+        "garlic powder."
+      ],
+      "hidden_ingredient_index": 8,
+      "hidden_ingredient": "salted butter"
+    }
+  ]
+}

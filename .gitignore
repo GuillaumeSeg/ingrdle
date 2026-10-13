@@ -3,3 +3,4 @@ scripts/data/*.csv.gz
 scripts/data/*.jsonl.gz*
 scripts/data/qualified_products.*
 scripts/__pycache__/
+static/questions-*.json
