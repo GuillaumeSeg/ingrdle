@@ -20,7 +20,7 @@ The first version is planned in English. Additional languages may follow later.
 - Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
 - The CSV test fixture contains 200 rows. Older fixtures without the `lang` column must be regenerated before `--use-test-csv` can filter them.
 
-Each generated question contains the product code, English name, brand, front-image URL, and an ordered array of top-level ingredient strings. Commas inside parentheses or brackets stay within their ingredient. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in that array, and `hidden_ingredient` contains its value. Answer choices, trivia, and the game itself are not generated yet.
+Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use curated ingredient-family pools first, then OpenRouter, with local fallback choices if the API is unavailable or not configured. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated yet.
 
 ## Run the prototype
 
@@ -32,6 +32,15 @@ source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
 python scripts/prepare_with_csv.py
 ```
+
+To enable OpenRouter distractors, create a local `.env` file at the repository root:
+
+```dotenv
+OPENROUTER_API_KEY=your_key_here
+OPENROUTER_MODEL=openrouter/free
+```
+
+`.env` is ignored by Git; never put a real API key in a tracked file. The default `openrouter/free` router chooses from currently available free models. Free-model availability, rate limits, latency, and response quality can vary. Set `OPENROUTER_MODEL` to a specific model ID if you prefer. Distractors are generated offline while building the daily batch, not when a player answers.
 
 Create a small test dataset once, then run against it without scanning the full export:
 
@@ -76,7 +85,7 @@ python scripts/generate_questions.py --date 2026-10-12
 python scripts/generate_questions.py --tomorrow
 ```
 
-Output is written to `static/questions-YYYY-MM-DD.json`. Each run chooses a fresh random seed, so regenerating the same date can produce different products. The seed is saved in the JSON; pass it with `--seed` to reproduce that selection.
+Output is written to `static/questions-YYYY-MM-DD.json`. Each run chooses a fresh random seed, so regenerating the same date can produce different products. The seed is saved in the JSON; pass it with `--seed` to reproduce product selection and local random choices. OpenRouter model responses are not guaranteed to be identical between runs.
 
 ## Planned gameplay
 
@@ -88,11 +97,15 @@ Output is written to `static/questions-YYYY-MM-DD.json`. Each run chooses a fres
 
 These are design goals, not features available in the current prototype.
 
+### Production answer security
+
+The prototype JSON includes `hidden_ingredient` for local development. Do not publish that answer in a static file served to players: anything sent to the browser can be inspected. In production, serve only the ingredient list and answer choices publicly; keep the correct answer in a private answer key or validate guesses on the server.
+
 ## Planned data pipeline
 
 1. Download and filter the English Open Food Facts export.
 2. Select products with enough ingredients and a front image.
-3. Use the generated hidden ingredient to create three plausible distractors, using taxonomy suggestions and fallback rules.
+3. Choose three distractors from curated ingredient-family pools, then use OpenRouter for missing or exotic ingredients; validate all choices and fall back locally if needed.
 4. Generate ingredient trivia, then review it manually.
 5. Export daily questions as static JSON for the game to consume.
 

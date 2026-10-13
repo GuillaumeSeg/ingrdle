@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-13",
+  "seed": 15030517692425217760,
+  "questions": [
+    {
+      "product_code": "9417986941783",
+      "product_name": "Lightly Salted Rice Crackers",
+      "brands": "theSnack organisation",
+      "image_url": "https://images.openfoodfacts.org/images/products/941/798/694/1783/front_en.17.400.jpg",
+      "ingredients": [
+        "rice (91%)",
+        "sugar",
+        "rice bran oil (contains antioxidant: soy tocopherols)",
+        "salt (1,5%)",
+        "soy sauce powder (soy, rice, salt)",
+        "flavour ennancers: disodium guanylate",
+        "disodium inosinate",
+        "antioxidant: soy tocopherol",
+        "soy sauce flavour",
+        "contains: soy gluten free",
+        "suitable for vegetarians",
+        "*ret how to store 96% fatfree store in a coot dry place",
+        "avoid direct sunlight and heat",
+        "d in thailand for hansells foods uk ltd",
+        "place",
+        "18-20 balham hill",
+        "london sw12 9er",
+        "78 1770",
+        "thesnackorganisati"
+      ],
+      "hidden_ingredient_index": 7,
+      "hidden_ingredient": "antioxidant: soy tocopherol",
+      "choices": [
+        "antioxidant: soy tocopherol",
+        "preservative: sodium benzoate",
+        "emulsifier: lecithin",
+        "flavour enhancer: monosodium glutamate"
+      ]
+    },
+    {
+      "product_code": "8410740006811",
+      "product_name": "Lacasitos Tuber",
+      "brands": "Lacasa",
+      "image_url": "https://images.openfoodfacts.org/images/products/841/074/000/6811/front_en.34.400.jpg",
+      "ingredients": [
+        "milk chocolate 62% (sugar, cocoa butter, cocoa paste 37%, whole milk powder, skimmed milk powder, emulsifier (soy lecithin), and natural vanilla flavor)",
+        "sugar",
+        "dyes (e-171, e-163, e-101, e-120, e-141, e-160a and e-153)",
+        "coating agents (e-414, e-903, e-901)"
+      ],
+      "hidden_ingredient_index": 0,
+      "hidden_ingredient": "milk chocolate 62% (sugar, cocoa butter, cocoa paste 37%, whole milk powder, skimmed milk powder, emulsifier (soy lecithin), and natural vanilla flavor)",
+      "choices": [
+        "palm oil",
+        "milk chocolate 62% (sugar, cocoa butter, cocoa paste 37%, whole milk powder, skimmed milk powder, emulsifier (soy lecithin), and natural vanilla flavor)",
+        "glucose syrup",
+        "modified starch"
+      ]
+    },
+    {
+      "product_code": "0078742277004",
+      "product_name": "Chicken Gravy",
+      "brands": "Great Value",
+      "image_url": "https://images.openfoodfacts.org/images/products/007/874/227/7004/front_en.5.400.jpg",
+      "ingredients": [
+        "Chicken broth",
+        "chicken fat",
+        "modified food starch",
+        "contains 2% or less of wheat flour",
+        "dried whey (milk)",
+        "salt",
+        "autolyzed yeast extract",
+        "natural flavor (includes milk)",
+        "cornstarch",
+        "sage",
+        "potassium chloride",
+        "sugar",
+        "onion powder",
+        "canola oil",
+        "chicken powder",
+        "black pepper",
+        "maltodextrin",
+        "soy lecithin",
+        "caramel color",
+        "citric acid",
+        "lactic acid",
+        "sucrose",
+        "beta carotene (color)."
+      ],
+      "hidden_ingredient_index": 20,
+      "hidden_ingredient": "lactic acid",
+      "choices": [
+        "gelatin",
+        "monosodium glutamate",
+        "lactic acid",
+        "butter"
+      ]
+    }
+  ]
+}

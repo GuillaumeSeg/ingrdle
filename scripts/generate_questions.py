@@ -6,8 +6,10 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
 if __package__:
+    from .distractors import generate_distractors
     from .prepare_with_json import (
         SAMPLE_SIZE,
         find_latest_jsonl,
@@ -15,6 +17,7 @@ if __package__:
     )
     from .product_filter import parse_ingredients
 else:
+    from distractors import generate_distractors
     from prepare_with_json import SAMPLE_SIZE, find_latest_jsonl, scan_archive
     from product_filter import parse_ingredients
 
@@ -58,20 +61,38 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
         )
 
     questions = []
-    for product in selected:
-        ingredients = parse_ingredients(product["ingredients_text"])
-        hidden_ingredient_index = rng.randrange(len(ingredients))
-        questions.append(
-            {
-                "product_code": product["code"],
-                "product_name": product["product_name"],
-                "brands": product["brands"],
-                "image_url": product["image_url"],
-                "ingredients": ingredients,
-                "hidden_ingredient_index": hidden_ingredient_index,
-                "hidden_ingredient": ingredients[hidden_ingredient_index],
-            }
-        )
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("{task.description}"),
+        TimeElapsedColumn(),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Creating answer choices...", total=len(selected))
+        for product in selected:
+            ingredients = parse_ingredients(product["ingredients_text"])
+            hidden_ingredient_index = rng.randrange(len(ingredients))
+            hidden_ingredient = ingredients[hidden_ingredient_index]
+            distractors = generate_distractors(
+                hidden_ingredient,
+                product["product_name"],
+                ingredients,
+                rng,
+            )
+            choices = [*distractors, hidden_ingredient]
+            rng.shuffle(choices)
+            questions.append(
+                {
+                    "product_code": product["code"],
+                    "product_name": product["product_name"],
+                    "brands": product["brands"],
+                    "image_url": product["image_url"],
+                    "ingredients": ingredients,
+                    "hidden_ingredient_index": hidden_ingredient_index,
+                    "hidden_ingredient": hidden_ingredient,
+                    "choices": choices,
+                }
+            )
+            progress.advance(task)
 
     document = {
         "date": target_date.isoformat(),
