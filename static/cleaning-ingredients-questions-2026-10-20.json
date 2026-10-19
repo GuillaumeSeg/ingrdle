@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-20",
+  "seed": 10577124313649239181,
+  "questions": [
+    {
+      "product_code": "0658325400151",
+      "product_name": "Lemon cake",
+      "brands": "GUAIO-IO",
+      "image_url": "https://images.openfoodfacts.org/images/products/065/832/540/0151/front_es.3.400.jpg",
+      "ingredients": [
+        "Mezcla base (Azúcar, harina de trigo, manteca vegetal, almidón de maíz, huevo en polvo, emulsionantes (sales de sodio, potasio y calcio de los ácidos grasos, mono y diglicéridos de ácidos grasos, ésteres de mono y diglicéridos de ácidos grasos, estearoil-2 lactilato de calcio) 33,2%, bicarbonato de sodio, fosfato de sodio y aluminio, sorbato de potasio, colorante natural, sabor idéntico al natural, proteína de soya, leche en polvo, sal, sucralosa, lecitina de soya, antioxidante (TARTRAZINA Y AMARILLO CREPÚSCULO) y maltasa enzimática)",
+        "Agua",
+        "Azúcar glass (Azúcar impalpable, almidón de maíz, aceite vegetal hidrogenado, fosfato tricálcico)."
+      ],
+      "hidden_ingredient_index": 0,
+      "hidden_ingredient": "Mezcla base (Azúcar, harina de trigo, manteca vegetal, almidón de maíz, huevo en polvo, emulsionantes (sales de sodio, potasio y calcio de los ácidos grasos, mono y diglicéridos de ácidos grasos, ésteres de mono y diglicéridos de ácidos grasos, estearoil-2 lactilato de calcio) 33,2%, bicarbonato de sodio, fosfato de sodio y aluminio, sorbato de potasio, colorante natural, sabor idéntico al natural, proteína de soya, leche en polvo, sal, sucralosa, lecitina de soya, antioxidante (TARTRAZINA Y AMARILLO CREPÚSCULO) y maltasa enzimática)",
+      "choices": [
+        "Canola oil",
+        "Wheat starch",
+        "Corn syrup solids",
+        "Mezcla base (Azúcar, harina de trigo, manteca vegetal, almidón de maíz, huevo en polvo, emulsionantes (sales de sodio, potasio y calcio de los ácidos grasos, mono y diglicéridos de ácidos grasos, ésteres de mono y diglicéridos de ácidos grasos, estearoil-2 lactilato de calcio) 33,2%, bicarbonato de sodio, fosfato de sodio y aluminio, sorbato de potasio, colorante natural, sabor idéntico al natural, proteína de soya, leche en polvo, sal, sucralosa, lecitina de soya, antioxidante (TARTRAZINA Y AMARILLO CREPÚSCULO) y maltasa enzimática)"
+      ]
+    },
+    {
+      "product_code": "0046100400661",
+      "product_name": "SHARP CHEDDAR SHREDDED CHEDDAR CHEESE",
+      "brands": "SARGENTO",
+      "image_url": "https://images.openfoodfacts.org/images/products/004/610/040/0661/front_en.10.400.jpg",
+      "ingredients": [
+        "CHEDDAR CHEESE [PASTEURIZED MILK, CHEESE CULTURE, SALT, ENZYMES, ANNATTO (VEGETABLE COLOR)]",
+        "POTATO STARCH AND POWDERED CELLULOSE (TO PREVENT CAKING)",
+        "NATAMYCIN (A NATURAL MOLD INHIBITOR)."
+      ],
+      "hidden_ingredient_index": 0,
+      "hidden_ingredient": "CHEDDAR CHEESE [PASTEURIZED MILK, CHEESE CULTURE, SALT, ENZYMES, ANNATTO (VEGETABLE COLOR)]",
+      "choices": [
+        "WHEY",
+        "MONTEREY JACK CHEESE",
+        "CULTURED PASTEURIZED MILK",
+        "CHEDDAR CHEESE [PASTEURIZED MILK, CHEESE CULTURE, SALT, ENZYMES, ANNATTO (VEGETABLE COLOR)]"
+      ]
+    },
+    {
+      "product_code": "8718265773363",
+      "product_name": "Ice Cream Cones",
+      "brands": "AH Basic",
+      "image_url": "https://images.openfoodfacts.org/images/products/871/826/577/3363/front_en.12.400.jpg",
+      "ingredients": [
+        "Water",
+        "Skimmed milk",
+        "Lactose",
+        "Sugar",
+        "Coconut fat",
+        "Wheat flour",
+        "Gluçose-fructose syrup",
+        "Milk protein",
+        "Emulsifier (soy lecithine, E471)",
+        "Stabilizer (carob kernel, guarpit flour)",
+        "Natural vanilla aroma",
+        "Coloring concentrate (carrot, pumpkin, safflower, lemon)",
+        "Lean cocoa powder",
+        "Hazelnut"
+      ],
+      "hidden_ingredient_index": 11,
+      "hidden_ingredient": "Coloring concentrate (carrot, pumpkin, safflower, lemon)",
+      "choices": [
+        "Coloring concentrate (beetroot, spirulina, turmeric, paprika)",
+        "Coloring concentrate (carrot, pumpkin, safflower, lemon)",
+        "Coloring concentrate (hibiscus, chokeberry, black carrot, tomato)",
+        "Coloring concentrate (annatto, caramel, elderberry, radish)"
+      ]
+    }
+  ]
+}

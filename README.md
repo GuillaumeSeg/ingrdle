@@ -20,7 +20,7 @@ The first version is planned in English. Additional languages may follow later.
 - Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
 - The CSV test fixture contains 200 rows. Older fixtures without the `lang` column must be regenerated before `--use-test-csv` can filter them.
 
-Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use OpenRouter first, with a matching curated ingredient-family pool as prompt context; curated pools and local fallback choices fill any remaining slots if the API is unavailable or returns too few valid suggestions. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated yet.
+Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. Before choosing the hidden ingredient or generating distractors, the generator asks OpenRouter to return a complete, consistently formatted ingredient list. The result is accepted only if every entry stays in the same order and retains the same words, numbers, allergen markers, and percentages. If the API is unavailable or returns an invalid list, the original ingredients are kept exactly as provided. The model can be changed with `OPENROUTER_CLEANING_MODEL`. After cleaning, nested parenthetical groups are removed from each ingredient while its first parenthetical level is kept. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use OpenRouter first, with a matching curated ingredient-family pool as prompt context; curated pools and local fallback choices fill any remaining slots if the API is unavailable or returns too few valid suggestions. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated yet.
 
 ## Run the prototype
 
@@ -37,10 +37,11 @@ To enable OpenRouter distractors, create a local `.env` file at the repository r
 
 ```dotenv
 OPENROUTER_API_KEY=your_key_here
-OPENROUTER_MODEL=openrouter/free
+OPENROUTER_MODEL=deepseek/deepseek-v4.1-flash
+OPENROUTER_CLEANING_MODEL=nvidia/nemotron-3-ultra-550b-a55b:free
 ```
 
-`.env` is ignored by Git; never put a real API key in a tracked file. The default `openrouter/free` router chooses from currently available free models. Free-model availability, rate limits, latency, and response quality can vary. Set `OPENROUTER_MODEL` to a specific model ID if you prefer. Distractors are generated offline while building the daily batch, not when a player answers.
+`.env` is ignored by Git; never put a real API key in a tracked file. `OPENROUTER_MODEL` selects the distractor model, while `OPENROUTER_CLEANING_MODEL` selects the ingredient-cleaning model. Both default to `openrouter/free` when unset. Free-model availability, rate limits, latency, and response quality can vary. Ingredient cleaning falls back to the exact original list if the selected model is unavailable or returns an invalid correction. Both tasks run offline while building the daily batch, not when a player answers.
 
 Create a small test dataset once, then run against it without scanning the full export:
 

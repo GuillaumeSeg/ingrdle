@@ -72,7 +72,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/scripts/generate_questions.py",
-      "args": ["--date", "2026-10-14"],
+      "args": ["--date", "2026-10-21"],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "python": "${command:python.interpreterPath}"

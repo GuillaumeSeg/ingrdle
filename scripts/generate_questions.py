@@ -9,17 +9,19 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
 if __package__:
+    from .audit_ingredients import clean_ingredient_list
     from .distractors import generate_distractors
     from .prepare_with_json import (
         SAMPLE_SIZE,
         find_latest_jsonl,
         scan_archive,
     )
-    from .product_filter import parse_ingredients
+    from .product_filter import parse_ingredients, truncate_nested_parentheses
 else:
+    from audit_ingredients import clean_ingredient_list
     from distractors import generate_distractors
     from prepare_with_json import SAMPLE_SIZE, find_latest_jsonl, scan_archive
-    from product_filter import parse_ingredients
+    from product_filter import parse_ingredients, truncate_nested_parentheses
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 console = Console()
@@ -61,15 +63,26 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
         )
 
     questions = []
+    fallback_count = 0
     with Progress(
         SpinnerColumn(),
         TextColumn("{task.description}"),
         TimeElapsedColumn(),
         console=console,
     ) as progress:
-        task = progress.add_task("Creating answer choices...", total=len(selected))
+        task = progress.add_task(
+            "Cleaning ingredients and creating choices...", total=len(selected)
+        )
         for product in selected:
             ingredients = parse_ingredients(product["ingredients_text"])
+            ingredients, used_fallback = clean_ingredient_list(
+                ingredients,
+                product["product_name"],
+            )
+            ingredients = [
+                truncate_nested_parentheses(ingredient) for ingredient in ingredients
+            ]
+            fallback_count += used_fallback
             hidden_ingredient_index = rng.randrange(len(ingredients))
             hidden_ingredient = ingredients[hidden_ingredient_index]
             distractors = generate_distractors(
@@ -110,6 +123,11 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
 
     if cache_built:
         console.print("Built the qualified-products cache during this run.")
+    if fallback_count:
+        console.print(
+            f"[yellow]Ingredient cleanup used the original lists for "
+            f"{fallback_count} of {len(selected)} products.[/yellow]"
+        )
     console.print(f"Generated {len(selected)} questions: {output_path}")
     return output_path
 

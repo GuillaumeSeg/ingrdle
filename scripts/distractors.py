@@ -111,6 +111,22 @@ def _match_hidden_format(candidate: str, hidden_ingredient: str) -> str:
     return " ".join(candidate.split())
 
 
+def _has_single_flat_parenthetical_group(ingredient: str) -> bool:
+    depth = 0
+    groups = 0
+    for character in ingredient:
+        if character == "(":
+            if depth:
+                return False
+            depth = 1
+            groups += 1
+        elif character == ")":
+            if not depth:
+                return False
+            depth = 0
+    return depth == 0 and groups == 1
+
+
 def _ai_distractors(
     hidden_ingredient: str,
     product_name: str,
@@ -130,16 +146,25 @@ def _ai_distractors(
             f"{', '.join(context_pool)}. Use these as inspiration, not as a "
             "required answer list."
         )
+    has_parentheses = "(" in hidden_ingredient and ")" in hidden_ingredient
+    parenthetical_rule = (
+        "- Include exactly one flat parenthetical group in every distractor, "
+        "with 2-4 plausible sub-ingredients. Do not nest parentheses or copy "
+        "the hidden ingredient's full sub-ingredient list.\n"
+        if has_parentheses
+        else "- Do not add parenthetical details; keep each distractor as a plain "
+        "ingredient name.\n"
+    )
     prompt = (
         f"The hidden ingredient is '{hidden_ingredient}' in the food product "
         f"'{product_name}'. Suggest exactly {count} plausible but incorrect "
         "food ingredients that could work as quiz distractors.\n\n"
         "Rules:\n"
         "- Use real ingredient-label terms in English.\n"
-        "- Match only formatting present in the hidden ingredient. If it has a "
-        "percentage, include a different plausible percentage in the same "
-        "format. Otherwise, do not add percentages, quantities, codes, or "
-        "parenthetical details; keep each distractor as a plain ingredient name.\n"
+        "- Match the hidden ingredient's formatting. If it has a percentage, "
+        "include a different plausible percentage in the same format. Do not "
+        "add quantities or codes.\n"
+        f"{parenthetical_rule}"
         "- Do NOT use the hidden ingredient itself, its synonyms, or any "
         f"ingredient in the excluded list.\n"
         f"- Return only a JSON array of {count} strings, nothing else.\n\n"
@@ -157,7 +182,7 @@ def _ai_distractors(
             "messages": [{"role": "user", "content": prompt}],
             "reasoning": {"effort": "none"},
             "temperature": 0.4,
-            "max_tokens": 200,
+            "max_tokens": 400 if has_parentheses else 200,
         },
         timeout=20,
     )
@@ -213,6 +238,12 @@ def generate_distractors(
             for suggestion in suggestions
         ]
         ai_candidates = _valid_candidates(suggestions, excluded)
+        if "(" in hidden_ingredient and ")" in hidden_ingredient:
+            ai_candidates = [
+                candidate
+                for candidate in ai_candidates
+                if _has_single_flat_parenthetical_group(candidate)
+            ]
         selected.extend(ai_candidates[:count])
     except (
         IndexError,

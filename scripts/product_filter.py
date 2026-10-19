@@ -43,6 +43,33 @@ def parse_ingredients(ingredients_text: str) -> list[str]:
     return ingredients
 
 
+def truncate_nested_parentheses(ingredient: str) -> str:
+    result = []
+    depth = 0
+    for character in ingredient:
+        if character == "(":
+            if depth == 0:
+                result.append(character)
+            else:
+                while result and result[-1].isspace():
+                    result.pop()
+            depth += 1
+        elif character == ")":
+            if depth == 0:
+                return ingredient
+            depth -= 1
+            if depth == 0:
+                while result and result[-1].isspace():
+                    result.pop()
+                result.append(character)
+        elif depth <= 1:
+            result.append(character)
+
+    if depth:
+        return ingredient
+    return "".join(result)
+
+
 def is_qualified(row: dict[str, str]) -> bool:
     if (row.get("lang") or "").strip().lower() != "en":
         return False
