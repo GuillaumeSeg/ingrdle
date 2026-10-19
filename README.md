@@ -2,7 +2,7 @@
 
 A daily food trivia game about the ingredients hiding in everyday products.
 
-> **Project status: early prototype.** The repository contains Python data-preparation scripts and can generate daily product-question JSON files. The game interface, answer generation, and deployment are not implemented yet.
+> **Project status: early prototype.** The repository contains Python data-preparation scripts and can generate daily product-question JSON files. The game interface, server-side answer validation, and deployment are not implemented yet.
 
 ## The idea
 
@@ -12,13 +12,13 @@ The first version is planned in English. Additional languages may follow later.
 
 ## What's in the repository today
 
-- [`scripts/prepare_with_csv.py`](scripts/prepare_with_csv.py) downloads the CSV export and randomly selects products with English names, enough ingredients, and a front image.
+- [`scripts/prepare_with_csv.py`](scripts/prepare_with_csv.py) downloads the CSV export and randomly selects products with English names, enough ingredients, and a front image. Open Food Facts' English fields can still contain untranslated text.
 - [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) selects qualified products from a random page of the Open Food Facts API.
 - [`scripts/download_jsonl.py`](scripts/download_jsonl.py) downloads the compressed JSONL export with a progress bar and month-based filename.
 - [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds or reuses a cache of qualified English products and prints a random sample. Its `--max-products` option is for quick, non-representative debug scans.
 - [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three date-specific product questions, including image URLs and a randomly selected hidden ingredient, to `static/questions-YYYY-MM-DD.json` and records the random seed.
 - Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
-- The CSV test fixture contains 200 rows. Older fixtures without the `lang` column must be regenerated before `--use-test-csv` can filter them.
+- The tracked CSV test fixture contains 200 rows.
 
 Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. Before choosing the hidden ingredient or generating distractors, the generator asks OpenRouter to return a complete, consistently formatted ingredient list. The result is accepted only if every entry stays in the same order and retains the same words, numbers, allergen markers, and percentages. If the API is unavailable or returns an invalid list, the original ingredients are kept exactly as provided. The model can be changed with `OPENROUTER_CLEANING_MODEL`. After cleaning, nested parenthetical groups are removed from each ingredient while its first parenthetical level is kept. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use OpenRouter first, with a matching curated ingredient-family pool as prompt context; curated pools and local fallback choices fill any remaining slots if the API is unavailable or returns too few valid suggestions. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated yet.
 
@@ -76,7 +76,7 @@ For a quicker, non-representative debug run, scan only the first 50,000 records 
 python scripts/prepare_with_json.py --max-products 50000
 ```
 
-The qualified-products cache is rebuilt automatically when the source archive or cache schema changes. The current schema change means the next full preparation run must rebuild it once; the progress indicator will show the scan. The rebuilt cache contains real front-image URLs derived from JSONL image metadata, so generated batches need no per-product image API requests.
+The qualified-products cache is rebuilt automatically when the source archive or cache schema changes. The rebuilt cache contains real front-image URLs derived from JSONL image metadata, so generated batches need no per-product image API requests.
 
 Generate tomorrow's question file, today's file, or choose a date explicitly:
 
@@ -119,15 +119,13 @@ This mode reuses all existing data (products, hidden ingredients, choices) witho
 
 ### Production answer security
 
-The prototype JSON includes `hidden_ingredient` for local development. Do not publish that answer in a static file served to players: anything sent to the browser can be inspected. In production, serve only the ingredient list and answer choices publicly; keep the correct answer in a private answer key or validate guesses on the server.
+The prototype JSON includes `hidden_ingredient` and `hidden_ingredient_index`; both reveal the answer when paired with the full ingredient list. Do not publish either field in a static file served to players. In production, serve a redacted ingredient list and the answer choices; keep the correct answer in a private answer key or validate guesses on the server.
 
-## Planned data pipeline
+## Data pipeline status
 
-1. Download and filter the English Open Food Facts export.
-2. Select products with enough ingredients and a front image.
-3. Ask OpenRouter for three distractors, using curated ingredient-family pools as context; validate all choices and fill any missing choices from local pools.
-4. Generate ingredient trivia, then review it manually.
-5. Export daily questions as static JSON for the game to consume.
+Implemented: download and filter the Open Food Facts export, select products with enough ingredients and a front image, generate and validate distractors, and export daily questions as static JSON.
+
+Planned: generate ingredient trivia, then review it manually. The game that consumes the JSON has not been built yet.
 
 Open Food Facts data is available under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/). Review its attribution and share-alike requirements before publishing derived datasets.
 
