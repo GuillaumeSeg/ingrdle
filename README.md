@@ -2,7 +2,7 @@
 
 A daily food trivia game about the ingredients hiding in everyday products.
 
-> **Project status: early prototype.** The repository contains Python data-preparation scripts and can generate daily product-question JSON files. The game interface, server-side answer validation, and deployment are not implemented yet.
+> **Project status: data-generation prototype.** The repository now supports product selection from Open Food Facts, reusable qualified-product caching, ingredient cleanup, distractor generation, and daily or review-batch JSON output. The game interface, server-side answer validation, editorial review tools, daily-batch composition, and deployment are not implemented yet.
 
 ## The idea
 
@@ -12,15 +12,19 @@ The first version is planned in English. Additional languages may follow later.
 
 ## What's in the repository today
 
-- [`scripts/prepare_with_csv.py`](scripts/prepare_with_csv.py) downloads the CSV export and randomly selects products with English names, enough ingredients, and a front image. Open Food Facts' English fields can still contain untranslated text.
-- [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) selects qualified products from a random page of the Open Food Facts API.
+- [`scripts/product_filter.py`](scripts/product_filter.py) parses ingredient lists and filters for English products with a name, at least three ingredients, and a front image.
+- [`scripts/prepare_with_csv.py`](scripts/prepare_with_csv.py) downloads the CSV export and randomly selects qualified products. Open Food Facts' English fields can still contain untranslated text.
+- [`scripts/prepare_with_api.py`](scripts/prepare_with_api.py) selects qualified products from one randomly selected page of the Open Food Facts API.
 - [`scripts/download_jsonl.py`](scripts/download_jsonl.py) downloads the compressed JSONL export with a progress bar and month-based filename.
-- [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds or reuses a cache of qualified English products and prints a random sample. Its `--max-products` option is for quick, non-representative debug scans.
-- [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three date-specific product questions, including image URLs and a randomly selected hidden ingredient, to `static/questions-YYYY-MM-DD.json` and records the random seed.
+- [`scripts/prepare_with_json.py`](scripts/prepare_with_json.py) builds or reuses a cache of qualified English products and prints a random sample. The cache is invalidated when the source archive or cache schema changes. Its `--max-products` option is for quick, non-representative debug scans.
+- [`scripts/audit_ingredients.py`](scripts/audit_ingredients.py) optionally asks OpenRouter to clean ingredient formatting, then rejects any result that changes ingredient content or order; invalid or unavailable responses fall back to the original list.
+- [`scripts/distractors.py`](scripts/distractors.py) requests plausible distractors from OpenRouter, then fills any missing choices from local ingredient pools.
+- [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three date-specific product questions by default to `static/questions-YYYY-MM-DD.json` and records the random seed. The seed can reproduce product selection and local random choices; remote model responses may differ.
+- [`scripts/generate_batch.py`](scripts/generate_batch.py) writes a configurable batch (45 questions by default) to `static/batches/batch_YYYY-MM-DD.json`, without trivia.
 - Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
-- The tracked CSV test fixture contains 200 rows.
+- The tracked CSV test fixture contains 200 product rows. `static/` also contains dated question files and experimental/curated JSON datasets; these are not automatically assembled into a reviewed daily schedule.
 
-Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. Before choosing the hidden ingredient or generating distractors, the generator asks OpenRouter to return a complete, consistently formatted ingredient list. The result is accepted only if every entry stays in the same order and retains the same words, numbers, allergen markers, and percentages. If the API is unavailable or returns an invalid list, the original ingredients are kept exactly as provided. The model can be changed with `OPENROUTER_CLEANING_MODEL`. After cleaning, nested parenthetical groups are removed from each ingredient while its first parenthetical level is kept. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use OpenRouter first, with a matching curated ingredient-family pool as prompt context; curated pools and local fallback choices fill any remaining slots if the API is unavailable or returns too few valid suggestions. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated yet.
+Each generated question contains the product code, English name, brand, front-image URL, an ordered array of top-level ingredient strings, and four shuffled answer choices: the hidden ingredient plus three distractors. When configured, OpenRouter is asked to clean ingredient formatting before the hidden ingredient and distractors are chosen. A response is accepted only if every entry stays in the same order and retains its words, numbers, allergen markers, and percentages. If the API is unavailable or returns an invalid list, the original ingredients are kept exactly as provided. The model can be changed with `OPENROUTER_CLEANING_MODEL`. After cleaning, nested parenthetical groups are removed from each ingredient while its first parenthetical level is kept. `hidden_ingredient_index` is the zero-based index of the randomly selected ingredient in the ingredient array, and `hidden_ingredient` contains its value. Distractors use OpenRouter first; hard-coded ingredient-family pools provide prompt context for recognized ingredients and local fallback choices fill any remaining slots. Commas inside parentheses or brackets stay within their ingredient. Trivia and the game itself are not generated by the current scripts.
 
 ## Run the prototype
 
@@ -33,15 +37,17 @@ python -m pip install -r requirements-dev.txt
 python scripts/prepare_with_csv.py
 ```
 
+The last command selects and prints three products; it does not create a question JSON file. Use `generate_questions.py` or `generate_batch.py` below to create question data.
+
 To enable OpenRouter distractors, create a local `.env` file at the repository root:
 
 ```dotenv
 OPENROUTER_API_KEY=your_key_here
-OPENROUTER_MODEL=deepseek/deepseek-v4.1-flash
-OPENROUTER_CLEANING_MODEL=nvidia/nemotron-3-ultra-550b-a55b:free
+# Optional: OPENROUTER_MODEL=your-distractor-model
+# Optional: OPENROUTER_CLEANING_MODEL=your-cleaning-model
 ```
 
-`.env` is ignored by Git; never put a real API key in a tracked file. `OPENROUTER_MODEL` selects the distractor model, while `OPENROUTER_CLEANING_MODEL` selects the ingredient-cleaning model. Both default to `openrouter/free` when unset. Free-model availability, rate limits, latency, and response quality can vary. Ingredient cleaning falls back to the exact original list if the selected model is unavailable or returns an invalid correction. Both tasks run offline while building the daily batch, not when a player answers.
+`.env` is ignored by Git; never put a real API key in a tracked file. `OPENROUTER_MODEL` selects the distractor model, while `OPENROUTER_CLEANING_MODEL` selects the ingredient-cleaning model. Both default to `openrouter/free` when unset. Model availability, rate limits, latency, and response quality can vary. These API calls happen during question preparation (and require network access when enabled), never when a player answers. Ingredient cleaning falls back to the exact original list if the selected model is unavailable or returns an invalid correction; distractors use local pools as fallbacks.
 
 Create a small test dataset once, then run against it without scanning the full export:
 
@@ -59,16 +65,16 @@ python scripts/prepare_with_api.py
 python scripts/prepare_with_api.py --page-size 100 --count 3
 ```
 
-The script makes two API requests: one to get the available page count, then one to fetch a randomly selected page. The API currently exposes at most 100 pages per search (up to 10,000 products at the default page size), so the selection is random within that result window, not the full 4.8-million-product catalog. With the documented search limit of 10 requests per minute, avoid running it more than five times per minute. The SDK does not currently expose this unfiltered `/api/v2/search` endpoint, so this request uses the API directly; the official SDK remains available for other product operations.
+The script makes two API requests: one to get the available page count, then one to fetch a randomly selected page. The selection is therefore limited to the pages reported by the API for that search, not the full Open Food Facts catalog. With the documented search limit of 10 requests per minute, avoid running it more than five times per minute. The SDK does not currently expose this unfiltered `/api/v2/search` endpoint, so this request uses the API directly; the official SDK remains available for other product operations.
 
-Download the full compressed JSONL export (about 13 GB compressed and 43 GB uncompressed in the current export):
+Download the full compressed JSONL export (a large download; make sure you have enough disk space):
 
 ```bash
 python scripts/download_jsonl.py
 python scripts/prepare_with_json.py
 ```
 
-The first full run scans the compressed JSONL archive and builds a cache; it took about 23 minutes on the current machine. Later runs sample from the cache instead of rescanning the archive. A live progress indicator shows the number of records scanned while building the cache.
+The first full run scans the compressed JSONL archive and builds a cache; runtime depends on the export and machine. Later runs sample from the cache instead of rescanning the archive. A live progress indicator shows scan progress while building the cache.
 
 For a quicker, non-representative debug run, scan only the first 50,000 records without using or building the cache:
 
@@ -82,7 +88,7 @@ Generate tomorrow's question file, today's file, or choose a date explicitly:
 
 ```bash
 python scripts/generate_questions.py
-python scripts/generate_questions.py --date 2026-10-12
+python scripts/generate_questions.py --date 2026-10-20
 python scripts/generate_questions.py --tomorrow
 ```
 
@@ -93,8 +99,10 @@ Generate a review batch without trivia. The default is 45 questions; use `--coun
 ```bash
 python scripts/generate_batch.py
 python scripts/generate_batch.py --count 20 --seed 1234
-python scripts/generate_batch.py --count 45 --date 2026-10-19
+python scripts/generate_batch.py --count 45 --date 2026-10-20
 ```
+
+Batch generation currently creates raw questions only. It does not review them, compose a schedule, or generate trivia.
 
 ## Planned gameplay
 
@@ -131,48 +139,18 @@ The prototype JSON includes `hidden_ingredient` and `hidden_ingredient_index`; b
 
 ## Data pipeline status
 
-Implemented: download and filter the Open Food Facts export, select products with enough ingredients and a front image, generate and validate distractors, and export daily questions as static JSON.
+**Implemented:** download and filter the Open Food Facts CSV or JSONL export; build and reuse a cache of qualified products; select products with enough ingredients and a front image; optionally clean ingredient formatting; generate distractors with local fallbacks; and export daily question files or raw review batches as JSON. The tracked `static/` directory contains dated question files and experimental/curated JSON data, but no tool currently turns those files into a reviewed, scheduled release.
 
-Planned: generate ingredient trivia, then review it manually. The game that consumes the JSON has not been built yet.
+**Still projected:** a human review step, deterministic composition of three questions per day from approved batches, and trivia generation followed by manual review. The game that consumes the JSON has not been built yet.
 
-Le pipeline final
-┌─────────────────────────────────────────────────────────┐
-│ 1. generate_batch.py  (45 questions, seed, no trivia)   │
-│    → batch_2026-10-19.json                              │
-└──────────────────────┬──────────────────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────────────────┐
-│ 2. review_batch.py  (terminal UI, rich)                 │
-│    → garde 32, rejette 13                               │
-│    → batch_2026-10-19_validated.json                    │
-└──────────────────────┬──────────────────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────────────────┐
-│ 3. compose_daily.py  (pop 3 par jour, déterministe)     │
-│    → questions-2026-10-20.json                          │
-│    → questions-2026-10-21.json                          │
-│    → ... (10 jours)                                     │
-└──────────────────────┬──────────────────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────────────────┐
-│ 4. generate_trivia.py  (uniquement sur les ingrédients  │
-│    des 32 questions validées)                           │
-│    → trivia_cache.json (pending)                        │
-│    → review_trivia.py (tu sélectionnes)                 │
-└─────────────────────────────────────────────────────────┘
+### Projected editorial workflow (not implemented)
 
-Structure du dossier
-static/
-├── batches/
-│   ├── batch_2026-10-19.json          (45 questions brutes)
-│   ├── batch_2026-10-19_validated.json (32)
-│   ├── batch_2026-10-22.json          (45)
-│   ├── batch_2026-10-22_validated.json (25)
-│   └── batch_2026-10-23.json          (45)
-│       (pas encore validé → ignoré par compose)
-├── questions-2026-10-24.json          (sortie compose_daily)
-├── questions-2026-10-25.json
-└── ...
+1. Generate a raw batch (45 questions by default, with seed, no trivia) using `generate_batch.py`.
+2. Add `review_batch.py` to approve or reject questions. A 32-approved / 13-rejected split is an example target, not a current script behavior or guaranteed result.
+3. Add `compose_daily.py` to deterministically select three approved questions per day, potentially preparing a 10-day schedule.
+4. Add `generate_trivia.py` for ingredients in approved questions, plus a `review_trivia.py` step for manual selection.
+
+The proposed output names include `batch_YYYY-MM-DD_validated.json`, `questions-YYYY-MM-DD.json`, and a trivia cache. Only the raw batch and daily-question generators exist today; the review, composition, and trivia stages remain roadmap items.
 
 Open Food Facts data is available under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/). Review its attribution and share-alike requirements before publishing derived datasets.
 
