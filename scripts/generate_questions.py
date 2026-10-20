@@ -6,7 +6,13 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
 
 if __package__:
     from .audit_ingredients import clean_ingredient_list
@@ -76,6 +82,8 @@ def generate_questions(
     with Progress(
         SpinnerColumn(),
         TextColumn("{task.description}"),
+        BarColumn(),
+        TextColumn("{task.completed:.0f}/{task.total:.0f}"),
         TimeElapsedColumn(),
         console=console,
     ) as progress:
