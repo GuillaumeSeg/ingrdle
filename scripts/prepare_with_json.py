@@ -201,11 +201,13 @@ def scan_archive(
     archive: Path,
     max_products: int | None,
     rng: random.Random | None = None,
+    sample_size: int = SAMPLE_SIZE,
 ) -> tuple[int, int, list[dict[str, str]], bool]:
     if max_products is not None:
         with gzip.open(archive, "rt", encoding="utf-8") as products:
             scanned, qualified_count, selected = sample_qualified_products(
                 products,
+                sample_size=sample_size,
                 max_products=max_products,
                 rng=rng,
             )
@@ -214,7 +216,7 @@ def scan_archive(
     if cache_matches_archive(archive):
         with CACHE_PATH.open(encoding="utf-8") as cached_products:
             scanned, qualified_count, selected = sample_qualified_products(
-                cached_products, rng=rng
+                cached_products, sample_size=sample_size, rng=rng
             )
         return scanned, qualified_count, selected, False
 
@@ -226,6 +228,7 @@ def scan_archive(
         ):
             scanned, qualified_count, selected = sample_qualified_products(
                 products,
+                sample_size=sample_size,
                 cache_output=cache_output,
                 rng=rng,
             )

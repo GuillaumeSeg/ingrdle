@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-20",
+  "seed": 2443608292939570593,
+  "questions": [
+    {
+      "product_code": "0300871239418",
+      "product_name": "Enfamil Nutramigen hypoallergenic formula 12.6 oz",
+      "brands": "",
+      "image_url": "https://images.openfoodfacts.org/images/products/030/087/123/9418/front_en.7.400.jpg",
+      "ingredients": [
+        "Corn syrup solids (47%)",
+        "Vegetable oil (contains one or more of the following: palm olein oil, coconut oil, soy oil, high oleic sunflower oil)",
+        "(26%)",
+        "Casein hydrolysate (milk) (17%)",
+        "Modified corn starch (4%)",
+        "And less than 2%: Mortierella alpina oil",
+        "Schizochytrium sp. oil*",
+        "Lactobacillus rhamnosus**",
+        "Calcium citrate",
+        "Calcium phosphate",
+        "Potassium chloride",
+        "Potassium citrate",
+        "Sodium citrate",
+        "Calcium hydroxide",
+        "Magnesium oxide",
+        "Ferrous sulfate",
+        "Zinc sulfate",
+        "Cupric sulfate",
+        "Manganese sulfate",
+        "Sodium iodide",
+        "Sodium selenite",
+        "Choline chloride",
+        "Ascorbic acid",
+        "Niacinamide",
+        "Calcium pantothenate",
+        "Vitamin D3",
+        "Thiamin hydrochloride",
+        "Riboflavin",
+        "Vitamin B6 hydrochloride",
+        "Folic acid",
+        "Vitamin K₁",
+        "Biotin",
+        "Vitamin B12",
+        "Inositol",
+        "Vitamin A palmitate",
+        "Vitamin E acetate",
+        "L-Cystine",
+        "L - Tyrosine",
+        "L-Tryptophan",
+        "Taurine",
+        "L-Carnitine"
+      ],
+      "hidden_ingredient_index": 7,
+      "hidden_ingredient": "Lactobacillus rhamnosus**",
+      "choices": [
+        "Lactobacillus rhamnosus**",
+        "Bifidobacterium lactis",
+        "Streptococcus thermophilus",
+        "Lactobacillus acidophilus"
+      ]
+    },
+    {
+      "product_code": "0027000002230",
+      "product_name": "Sour Patch Blue Raspberry",
+      "brands": "",
+      "image_url": "https://images.openfoodfacts.org/images/products/002/700/000/2230/front_en.3.400.jpg",
+      "ingredients": [
+        "water",
+        "sugar",
+        "citric acid",
+        "modified tapioca starch",
+        "adipic acid",
+        "carrageenan",
+        "sodium citrate",
+        "potassium citrate",
+        "konjac flour",
+        "xanthan gum",
+        "natural flavors",
+        "blue 1"
+      ],
+      "hidden_ingredient_index": 10,
+      "hidden_ingredient": "natural flavors",
+      "choices": [
+        "malic acid",
+        "fumaric acid",
+        "natural flavors",
+        "artificial flavors"
+      ]
+    },
+    {
+      "product_code": "0812224009390",
+      "product_name": "BBQ Link Sausage",
+      "brands": "Slovacek's",
+      "image_url": "https://images.openfoodfacts.org/images/products/081/222/400/9390/front_en.9.400.jpg",
+      "ingredients": [
+        "Pork",
+        "Pork Hearts",
+        "Water",
+        "Beef",
+        "Salt",
+        "Spices",
+        "Sugar",
+        "Dried Garlic",
+        "Sodium Phosphate",
+        "Monosodium Glutamate",
+        "Natural Smoke Flavor",
+        "Sodium Erythorbate",
+        "Sodium Nitrite."
+      ],
+      "hidden_ingredient_index": 11,
+      "hidden_ingredient": "Sodium Erythorbate",
+      "choices": [
+        "Potassium Lactate",
+        "Sodium Erythorbate",
+        "Sodium Ascorbate",
+        "Sodium Diacetate"
+      ]
+    },
+    {
+      "product_code": "0789232000520",
+      "product_name": "L’Ora del Garda",
+      "brands": "Talla’s Cantina",
+      "image_url": "https://images.openfoodfacts.org/images/products/078/923/200/0520/front_en.3.400.jpg",
+      "ingredients": [
+        "Oats",
+        "Almonds",
+        "Unsweetened Dried Plums",
+        "Unsweetened Raisins",
+        "Pea Protein",
+        "Peanuts",
+        "Flaxseed",
+        "Sunflower Seeds",
+        "Pumpkin Seeds",
+        "Canadian Maple Syrup"
+      ],
+      "hidden_ingredient_index": 6,
+      "hidden_ingredient": "Flaxseed",
+      "choices": [
+        "Hemp Hearts",
+        "Chia Seeds",
+        "Flaxseed",
+        "Sesame Seeds"
+      ]
+    },
+    {
+      "product_code": "5057753932404",
+      "product_name": "Brltlsh",
+      "brands": "NI Class A Barn Egg",
+      "image_url": "https://images.openfoodfacts.org/images/products/505/775/393/2404/front_en.4.400.jpg",
+      "ingredients": [
+        "BES SH GS 15 Mixed weight Class A barn eggs Consumer advice-To maintain freshness",
+        "keep refrigerated after purchase. Contains brown or white eggs of different sizes. The Lion mark is your guarantee that these are quality eggs laid by British hens vaccinated against Salmonella. More information and hundreds of recipe ideas at egginfo.co.uk Produced in the UK for Tesco Stores Ltd. Welwyn Garden City ALT 1GA",
+        "U.K. Ⓒ Tesco 2024. Not for EU Brilish Min Net Weight 805g Recycle 5 057753 932404 &gt; Lion Quality Energy 547kJ/"
+      ],
+      "hidden_ingredient_index": 1,
+      "hidden_ingredient": "keep refrigerated after purchase. Contains brown or white eggs of different sizes. The Lion mark is your guarantee that these are quality eggs laid by British hens vaccinated against Salmonella. More information and hundreds of recipe ideas at egginfo.co.uk Produced in the UK for Tesco Stores Ltd. Welwyn Garden City ALT 1GA",
+      "choices": [
+        "keep refrigerated after purchase. Contains brown or white eggs of different sizes. The Lion mark is your guarantee that these are quality eggs laid by British hens vaccinated against Salmonella. More information and hundreds of recipe ideas at egginfo.co.uk Produced in the UK for Tesco Stores Ltd. Welwyn Garden City ALT 1GA",
+        "medium eggs",
+        "mixed weight eggs",
+        "free range eggs"
+      ]
+    }
+  ]
+}

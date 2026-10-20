@@ -45,7 +45,15 @@ def resolve_target_date(
     return current_date + timedelta(days=1) if tomorrow else current_date
 
 
-def generate_questions(target_date: date, seed: int | None = None) -> Path:
+def generate_questions(
+    target_date: date,
+    seed: int | None = None,
+    question_count: int = SAMPLE_SIZE,
+    output_path: Path | None = None,
+) -> Path:
+    if question_count < 1:
+        raise ValueError("Question count must be at least 1.")
+
     archive = find_latest_jsonl()
     if archive is None:
         raise FileNotFoundError("No JSONL archive found. Run download_jsonl.py first.")
@@ -56,10 +64,11 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
         archive,
         max_products=None,
         rng=rng,
+        sample_size=question_count,
     )
-    if len(selected) < SAMPLE_SIZE:
+    if len(selected) < question_count:
         raise ValueError(
-            f"Need {SAMPLE_SIZE} qualified products, found {qualified_count}."
+            f"Need {question_count} qualified products, found {qualified_count}."
         )
 
     questions = []
@@ -113,8 +122,9 @@ def generate_questions(target_date: date, seed: int | None = None) -> Path:
         "questions": questions,
     }
 
-    STATIC_DIR.mkdir(parents=True, exist_ok=True)
-    output_path = STATIC_DIR / f"questions-{target_date.isoformat()}.json"
+    if output_path is None:
+        output_path = STATIC_DIR / f"questions-{target_date.isoformat()}.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     temporary_path = output_path.with_suffix(".json.part")
     with temporary_path.open("w", encoding="utf-8") as output:
         json.dump(document, output, ensure_ascii=False, indent=2)

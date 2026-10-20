@@ -76,6 +76,24 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "python": "${command:python.interpreterPath}"
+    },
+    {
+      "name": "Generate: Question batch (45)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/generate_batch.py",
+      "args": ["--count", "${input:batchQuestionCount}"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${command:python.interpreterPath}"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "batchQuestionCount",
+      "type": "promptString",
+      "description": "Number of questions in the batch",
+      "default": "45"
     }
   ]
 }

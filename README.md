@@ -88,6 +88,14 @@ python scripts/generate_questions.py --tomorrow
 
 Output is written to `static/questions-YYYY-MM-DD.json`. Each run chooses a fresh random seed, so regenerating the same date can produce different products. The seed is saved in the JSON; pass it with `--seed` to reproduce product selection and local random choices. OpenRouter model responses are not guaranteed to be identical between runs.
 
+Generate a review batch without trivia. The default is 45 questions; use `--count` to choose another size. Batches are written to `static/batches/batch_YYYY-MM-DD.json` using today's UTC date unless `--date` is provided:
+
+```bash
+python scripts/generate_batch.py
+python scripts/generate_batch.py --count 20 --seed 1234
+python scripts/generate_batch.py --count 45 --date 2026-10-19
+```
+
 ## Planned gameplay
 
 - Three products per day, each with one hidden ingredient and four answer choices.
@@ -126,6 +134,45 @@ The prototype JSON includes `hidden_ingredient` and `hidden_ingredient_index`; b
 Implemented: download and filter the Open Food Facts export, select products with enough ingredients and a front image, generate and validate distractors, and export daily questions as static JSON.
 
 Planned: generate ingredient trivia, then review it manually. The game that consumes the JSON has not been built yet.
+
+Le pipeline final
+┌─────────────────────────────────────────────────────────┐
+│ 1. generate_batch.py  (45 questions, seed, no trivia)   │
+│    → batch_2026-10-19.json                              │
+└──────────────────────┬──────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│ 2. review_batch.py  (terminal UI, rich)                 │
+│    → garde 32, rejette 13                               │
+│    → batch_2026-10-19_validated.json                    │
+└──────────────────────┬──────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│ 3. compose_daily.py  (pop 3 par jour, déterministe)     │
+│    → questions-2026-10-20.json                          │
+│    → questions-2026-10-21.json                          │
+│    → ... (10 jours)                                     │
+└──────────────────────┬──────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│ 4. generate_trivia.py  (uniquement sur les ingrédients  │
+│    des 32 questions validées)                           │
+│    → trivia_cache.json (pending)                        │
+│    → review_trivia.py (tu sélectionnes)                 │
+└─────────────────────────────────────────────────────────┘
+
+Structure du dossier
+static/
+├── batches/
+│   ├── batch_2026-10-19.json          (45 questions brutes)
+│   ├── batch_2026-10-19_validated.json (32)
+│   ├── batch_2026-10-22.json          (45)
+│   ├── batch_2026-10-22_validated.json (25)
+│   └── batch_2026-10-23.json          (45)
+│       (pas encore validé → ignoré par compose)
+├── questions-2026-10-24.json          (sortie compose_daily)
+├── questions-2026-10-25.json
+└── ...
 
 Open Food Facts data is available under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/). Review its attribution and share-alike requirements before publishing derived datasets.
 
