@@ -9,13 +9,12 @@
       "image_url": "https://images.openfoodfacts.org/images/products/030/087/123/9418/front_en.7.400.jpg",
       "ingredients": [
         "Corn syrup solids (47%)",
-        "Vegetable oil (contains one or more of the following: palm olein oil, coconut oil, soy oil, high oleic sunflower oil)",
-        "(26%)",
+        "Vegetable oil (contains one or more of the following: palm olein oil, coconut oil, soy oil, high oleic sunflower oil) (26%)",
         "Casein hydrolysate (milk) (17%)",
         "Modified corn starch (4%)",
         "And less than 2%: Mortierella alpina oil",
         "Schizochytrium sp. oil*",
-        "Lactobacillus rhamnosus**",
+        "Lactobacillus rhamnosus",
         "Calcium citrate",
         "Calcium phosphate",
         "Potassium chloride",
@@ -50,10 +49,10 @@
         "Taurine",
         "L-Carnitine"
       ],
-      "hidden_ingredient_index": 7,
-      "hidden_ingredient": "Lactobacillus rhamnosus**",
+      "hidden_ingredient_index": 6,
+      "hidden_ingredient": "Lactobacillus rhamnosus",
       "choices": [
-        "Lactobacillus rhamnosus**",
+        "Lactobacillus rhamnosus",
         "Bifidobacterium lactis",
         "Streptococcus thermophilus",
         "Lactobacillus acidophilus"
