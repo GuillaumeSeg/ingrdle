@@ -21,6 +21,7 @@ The first version is planned in English. Additional languages may follow later.
 - [`scripts/distractors.py`](scripts/distractors.py) requests plausible distractors from OpenRouter, then fills any missing choices from local ingredient pools.
 - [`scripts/generate_questions.py`](scripts/generate_questions.py) writes three date-specific product questions by default to `static/questions-YYYY-MM-DD.json` and records the random seed. The seed can reproduce product selection and local random choices; remote model responses may differ.
 - [`scripts/generate_batch.py`](scripts/generate_batch.py) writes a configurable batch (45 questions by default) to `static/batches/batch_YYYY-MM-DD.json`, without trivia.
+- [`scripts/review_batch.py`](scripts/review_batch.py) interactively reviews one batch in the terminal and writes kept questions to `batch_YYYY-MM-DD_validated.json`.
 - Downloaded exports and the qualified-product cache live in `scripts/data/` and are ignored by Git.
 - The tracked CSV test fixture contains 200 product rows. `static/` also contains dated question files and experimental/curated JSON datasets; these are not automatically assembled into a reviewed daily schedule.
 
@@ -104,6 +105,13 @@ python scripts/generate_batch.py --count 45 --date 2026-10-20
 
 Batch generation currently creates raw questions only. It does not review them, compose a schedule, or generate trivia.
 
+Review a raw batch interactively. Use `K` to keep a question, `R` to reject it, `S` to defer it until the other questions have been reviewed, or `Q` to quit without writing an output file. The original batch is never modified, and an existing validated output is not overwritten:
+
+```bash
+python scripts/review_batch.py static/batches/batch_2026-10-20.json
+python scripts/review_batch.py static/batches/batch_2026-10-20.json --output /tmp/reviewed-batch.json
+```
+
 ## Planned gameplay
 
 - Three products per day, each with one hidden ingredient and four answer choices.
@@ -139,18 +147,18 @@ The prototype JSON includes `hidden_ingredient` and `hidden_ingredient_index`; b
 
 ## Data pipeline status
 
-**Implemented:** download and filter the Open Food Facts CSV or JSONL export; build and reuse a cache of qualified products; select products with enough ingredients and a front image; optionally clean ingredient formatting; generate distractors with local fallbacks; and export daily question files or raw review batches as JSON. The tracked `static/` directory contains dated question files and experimental/curated JSON data, but no tool currently turns those files into a reviewed, scheduled release.
+**Implemented:** download and filter the Open Food Facts CSV or JSONL export; build and reuse a cache of qualified products; select products with enough ingredients and a front image; optionally clean ingredient formatting; generate distractors with local fallbacks; export daily question files or raw review batches; and interactively keep or reject batch questions. The tracked `static/` directory contains dated question files and experimental/curated JSON data, but no tool currently turns reviewed batches into a scheduled release.
 
-**Still projected:** a human review step, deterministic composition of three questions per day from approved batches, and trivia generation followed by manual review. The game that consumes the JSON has not been built yet.
+**Still projected:** deterministic composition of three questions per day from approved batches, and trivia generation followed by manual review. The game that consumes the JSON has not been built yet.
 
-### Projected editorial workflow (not implemented)
+### Editorial workflow
 
 1. Generate a raw batch (45 questions by default, with seed, no trivia) using `generate_batch.py`.
-2. Add `review_batch.py` to approve or reject questions. A 32-approved / 13-rejected split is an example target, not a current script behavior or guaranteed result.
+2. Review it with `review_batch.py`; the script writes the kept questions to `batch_YYYY-MM-DD_validated.json`.
 3. Add `compose_daily.py` to deterministically select three approved questions per day, potentially preparing a 10-day schedule.
 4. Add `generate_trivia.py` for ingredients in approved questions, plus a `review_trivia.py` step for manual selection.
 
-The proposed output names include `batch_YYYY-MM-DD_validated.json`, `questions-YYYY-MM-DD.json`, and a trivia cache. Only the raw batch and daily-question generators exist today; the review, composition, and trivia stages remain roadmap items.
+The planned outputs also include `questions-YYYY-MM-DD.json` and a trivia cache. Daily composition and trivia generation/review remain roadmap items.
 
 Open Food Facts data is available under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/). Review its attribution and share-alike requirements before publishing derived datasets.
 

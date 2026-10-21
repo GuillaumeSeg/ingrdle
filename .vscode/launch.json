@@ -86,6 +86,16 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "python": "${command:python.interpreterPath}"
+    },
+    {
+      "name": "Review: batch",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/review_batch.py",
+      "args": ["${workspaceFolder}/static/batches/${input:reviewBatchFile}"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${command:python.interpreterPath}"
     }
   ],
   "inputs": [
@@ -94,6 +104,17 @@
       "type": "promptString",
       "description": "Number of questions in the batch",
       "default": "45"
+    },
+    {
+      "id": "reviewBatchFile",
+      "type": "pickString",
+      "description": "Choose the batch to review",
+      "options": [
+        "batch_2026-10-18.json",
+        "batch_2026-10-19.json",
+        "batch_2026-10-20.json"
+      ],
+      "default": "batch_2026-10-18.json"
     }
   ]
 }

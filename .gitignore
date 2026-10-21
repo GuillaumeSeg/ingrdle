@@ -7,3 +7,4 @@ scripts/data/qualified_products.*
 scripts/__pycache__/
 static/questions-*.json
 static/batches/batch_*.json
+tests/__pycache__/
